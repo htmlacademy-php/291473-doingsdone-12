@@ -6,42 +6,53 @@ $show_complete_tasks = rand(0, 1);
 $projects = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
 $tasks = [
     [
-        'Задача' => 'Собеседование в IT компании',
-        'Дата выполнения' => '01.12.2019',
-        'Категория' => 'Работа',
-        'Выполнен' => 'false',
+        'task' => 'Собеседование в IT компании',
+        'date' => '01.12.2019',
+        'category' => 'Работа',
+        'completed' => 'false',
      ],
     [
-        'Задача' => 'Выполнить тестовое задание',
-        'Дата выполнения' => '25.12.2019',
-        'Категория' => 'Работа',
-        'Выполнен' => 'false',
+        'task' => 'Выполнить тестовое задание',
+        'date' => '25.12.2019',
+        'category' => 'Работа',
+        'completed' => 'false',
     ],
     [
-        'Задача' => 'Сделать задание первого раздела',
-        'Дата выполнения' => '21.12.2019',
-        'Категория' => 'Учеба',
-        'Выполнен' => 'true',
+        'task' => 'Сделать задание первого раздела',
+        'date' => '21.12.2019',
+        'category' => 'Учеба',
+        'completed' => 'true',
     ],
     [
-        'Задача' => 'Собеседование в IT компании',
-        'Дата выполнения' => '22.12.2019',
-        'Категория' => 'Входящие',
-        'Выполнен' => 'false',
+        'task' => 'Собеседование в IT компании',
+        'date' => '22.12.2019',
+        'category' => 'Входящие',
+        'completed' => 'false',
     ],
     [
-        'Задача' => 'Купить корм для кота',
-        'Дата выполнения' => 'null',
-        'Категория' => 'Домашние дела',
-        'Выполнен' => 'false',
+        'task' => 'Купить корм для кота',
+        'date' => 'null',
+        'category' => 'Домашние дела',
+        'completed' => 'false',
     ],
     [
-        'Задача' => 'Заказать пиццу',
-        'Дата выполнения' => 'null',
-        'Категория' => 'Домашние дела',
-        'Выполнен' => 'false',
+        'task' => 'Заказать пиццу',
+        'date' => 'null',
+        'category' => 'Домашние дела',
+        'completed' => 'false',
     ],
 ];
+
+ function count_tasks($tasks, $project) {
+    $tasks_count = 0;
+    foreach($tasks as $task) {
+        if ($task['category'] == $project) {
+            $tasks_count++;
+        }
+    }
+    return $tasks_count;
+};
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -86,7 +97,7 @@ $tasks = [
                     <?php foreach($projects as $project): ?>
                         <li class="main-navigation__list-item">
                             <a class="main-navigation__list-item-link" href="#"><?= $project ?></a>
-                            <span class="main-navigation__list-item-count">0</span>
+                            <span class="main-navigation__list-item-count"><?= count_tasks($tasks, $project) ?></span>
                         </li>
                     <?php endforeach; ?>
                     </ul>
@@ -122,15 +133,15 @@ $tasks = [
                 <table class="tasks">
                     <?php foreach($tasks as $task): ?>
                         <?php
-                            if ($task['Выполнен'] == 'true' && $show_complete_tasks == 1) {
+                            if ($task['completed'] == 'true' && $show_complete_tasks == 1) {
                                 continue;
                             }
                         ?>
-                        <tr class="tasks__item task <?= $task['Выполнен'] == 'true' ? 'task--completed' : '' ?>">
+                        <tr class="tasks__item task <?= $task['completed'] == 'true' ? 'task--completed' : '' ?>">
                             <td class="task__select">
                                 <label class="checkbox task__checkbox">
                                     <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
-                                    <span class="checkbox__text"><?= $task['Задача'] ?></span>
+                                    <span class="checkbox__text"><?= $task['task'] ?></span>
                                 </label>
                             </td>
 
@@ -138,7 +149,7 @@ $tasks = [
                                 <a class="download-link" href="#">Home.psd</a>
                             </td>
 
-                            <td class="task__date"><?= $task['Дата выполнения'] ?></td>
+                            <td class="task__date"><?= $task['date'] ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </table>
