@@ -17,8 +17,8 @@ CREATE TABLE users (
 CREATE TABLE projects (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
     project_name VARCHAR(128) NOT NULL,
-    user_name INT UNSIGNED NOT NULL,
-    FOREIGN KEY (user_name) REFERENCES users(id),
+    user_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
     UNIQUE INDEX project_name(project_name)
 );
 
@@ -29,8 +29,8 @@ CREATE TABLE tasks (
     task_name VARCHAR(128) NOT NULL,
     file_link VARCHAR(128),
     deadline DATETIME NOT NULL,
-    user_name INT UNSIGNED NOT NULL,
-    project_name INT UNSIGNED NOT NULL,
-    FOREIGN KEY (user_name) REFERENCES users(id),
-    FOREIGN KEY (project_name) REFERENCES projects(id)
+    user_id INT UNSIGNED NOT NULL,
+    project_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (project_id) REFERENCES projects(id)
 );
