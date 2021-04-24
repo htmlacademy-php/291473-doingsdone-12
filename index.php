@@ -8,40 +8,40 @@ $user_name = 'Дмитрий';
 $projects = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
 $tasks = [
     [
-        'task' => 'Собеседование в IT компании',
+        'name' => 'Собеседование в IT компании',
         'date' => '01.12.2019',
         'category' => 'Работа',
-        'completed' => 'false',
+        'completed' => false,
     ],
     [
-        'task' => 'Выполнить тестовое задание',
+        'name' => 'Выполнить тестовое задание',
         'date' => '25.12.2019',
         'category' => 'Работа',
-        'completed' => 'false',
+        'completed' => false,
     ],
     [
-        'task' => 'Сделать задание первого раздела',
+        'name' => 'Сделать задание первого раздела',
         'date' => '21.12.2019',
         'category' => 'Учеба',
-        'completed' => 'true',
+        'completed' => true,
     ],
     [
-        'task' => 'Собеседование в IT компании',
+        'name' => 'Собеседование в IT компании',
         'date' => '22.12.2019',
         'category' => 'Входящие',
-        'completed' => 'false',
+        'completed' => false,
     ],
     [
-        'task' => 'Купить корм для кота',
+        'name' => 'Купить корм для кота',
         'date' => 'null',
         'category' => 'Домашние дела',
-        'completed' => 'false',
+        'completed' => false,
     ],
     [
-        'task' => 'Заказать пиццу',
+        'name' => 'Заказать пиццу',
         'date' => 'null',
         'category' => 'Домашние дела',
-        'completed' => 'false',
+        'completed' => false,
     ],
 ];
 
