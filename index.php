@@ -15,7 +15,7 @@ $tasks = [
     ],
     [
         'name' => 'Выполнить тестовое задание',
-        'date' => '25.12.2019',
+        'date' => '24.04.2021',
         'category' => 'Работа',
         'completed' => false,
     ],
@@ -27,7 +27,7 @@ $tasks = [
     ],
     [
         'name' => 'Собеседование в IT компании',
-        'date' => '22.12.2019',
+        'date' => '25.05.2021',
         'category' => 'Входящие',
         'completed' => false,
     ],
@@ -45,7 +45,7 @@ $tasks = [
     ],
 ];
 
-function count_tasks($tasks, $project)
+function get_tasks_count($tasks, $project)
 {
     $tasks_count = 0;
     foreach ($tasks as $task) {
@@ -56,7 +56,22 @@ function count_tasks($tasks, $project)
     return $tasks_count;
 };
 
-$page_content = include_template('main.php', ['projects' => $projects, 'tasks' => $tasks, 'show_complete_tasks' => $show_complete_tasks,]);
+function get_task_time($task)
+{
+    $current_time = time();
+    $task_time = strtotime($task['date']);
+    $task_deadline = ($task_time - $current_time) / 3600;
+
+    if ($task_deadline <= 24) {
+        return 'task--important';
+    }
+};
+
+$page_content = include_template('main.php', [
+    'projects' => $projects,
+    'tasks' => $tasks,
+    'show_complete_tasks' => $show_complete_tasks,
+]);
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,

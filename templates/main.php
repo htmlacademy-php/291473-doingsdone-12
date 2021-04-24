@@ -1,3 +1,6 @@
+<?php
+require_once('helpers.php');
+?>
 <section class="content__side">
     <h2 class="content__side-heading">Проекты</h2>
 
@@ -6,7 +9,7 @@
             <?php foreach ($projects as $project) : ?>
                 <li class="main-navigation__list-item">
                     <a class="main-navigation__list-item-link" href="#"><?= htmlspecialchars($project) ?></a>
-                    <span class="main-navigation__list-item-count"><?= count_tasks($tasks, $project) ?></span>
+                    <span class="main-navigation__list-item-count"><?= get_tasks_count($tasks, $project) ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -45,7 +48,7 @@
                 continue;
             }
             ?>
-            <tr class="tasks__item task <?= $task['completed'] ? 'task--completed' : '' ?>">
+            <tr class="tasks__item task <?= $task['completed'] ? 'task--completed' : '' ?> <?= get_task_time($task) ?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
