@@ -8,8 +8,8 @@ require_once('helpers.php');
         <ul class="main-navigation__list">
             <?php foreach ($projects as $project) : ?>
                 <li class="main-navigation__list-item">
-                    <a class="main-navigation__list-item-link" href="#"><?= htmlspecialchars($project) ?></a>
-                    <span class="main-navigation__list-item-count"><?= get_tasks_count($tasks, $project) ?></span>
+                    <a class="main-navigation__list-item-link" href="#"><?= htmlspecialchars($project['project_name']) ?></a>
+                    <span class="main-navigation__list-item-count"><?= get_tasks_count($tasks, $project['project_name']) ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -44,15 +44,15 @@ require_once('helpers.php');
     <table class="tasks">
         <?php foreach ($tasks as $task) : ?>
             <?php
-            if ($task['completed'] && $show_complete_tasks == 1) {
+            if ($task['status'] && $show_complete_tasks == 1) {
                 continue;
             }
             ?>
-            <tr class="tasks__item task <?= $task['completed'] ? 'task--completed' : '' ?> <?= get_task_time($task) ?>">
+            <tr class="tasks__item task <?= $task['status'] ? 'task--completed' : '' ?> <?= get_task_time($task) ?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
-                        <span class="checkbox__text"><?= htmlspecialchars($task['name']) ?></span>
+                        <span class="checkbox__text"><?= htmlspecialchars($task['task_name']) ?></span>
                     </label>
                 </td>
 
@@ -60,7 +60,7 @@ require_once('helpers.php');
                     <a class="download-link" href="#">Home.psd</a>
                 </td>
 
-                <td class="task__date"><?= $task['date'] ?></td>
+                <td class="task__date"><?= $task['deadline'] ?></td>
             </tr>
         <?php endforeach; ?>
     </table>
