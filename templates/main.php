@@ -7,8 +7,8 @@ require_once('helpers.php');
     <nav class="main-navigation">
         <ul class="main-navigation__list">
             <?php foreach ($projects as $project) : ?>
-                <li class="main-navigation__list-item">
-                    <a class="main-navigation__list-item-link" href="#"><?= htmlspecialchars($project['project_name']) ?></a>
+                <li class="main-navigation__list-item <?= $project['id'] == $project_id ? 'main-navigation__list-item--active' : '' ?>">
+                    <a class="main-navigation__list-item-link" href="?project-id=<?= $project['id'] ?>"><?= htmlspecialchars($project['project_name']) ?></a>
                     <span class="main-navigation__list-item-count"><?= get_tasks_count($tasks, $project['project_name']) ?></span>
                 </li>
             <?php endforeach; ?>

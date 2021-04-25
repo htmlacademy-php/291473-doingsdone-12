@@ -7,8 +7,16 @@ require_once('includes/db_connect.inc.php');
 $show_complete_tasks = rand(0, 1);
 $user_name = 'dmitry';
 
+$project_id = filter_input(INPUT_GET, 'project-id', FILTER_VALIDATE_INT);
 $projects = select_query($con, "SELECT p.* FROM projects p INNER JOIN users u ON u.id = p.user_id WHERE user_name = '$user_name'");
-$tasks = select_query($con, "SELECT t.*, p.* FROM tasks t INNER JOIN users u ON u.id = t.user_id INNER JOIN projects p ON p.id = t.project_id WHERE user_name = '$user_name'");
+
+if ($project_id) {
+    $project_query = "AND p.id = '$project_id'";
+} else {
+    $project_query = null;
+}
+
+$tasks = select_query($con, "SELECT t.*, p.* FROM tasks t INNER JOIN users u ON u.id = t.user_id INNER JOIN projects p ON p.id = t.project_id WHERE user_name = '$user_name'" . $project_query);
 
 function get_tasks_count($tasks, $project)
 {
@@ -36,6 +44,7 @@ $page_content = include_template('main.php', [
     'projects' => $projects,
     'tasks' => $tasks,
     'show_complete_tasks' => $show_complete_tasks,
+    'project_id' => $project_id,
 ]);
 
 $layout_content = include_template('layout.php', [
