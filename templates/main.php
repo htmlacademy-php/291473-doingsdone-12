@@ -42,7 +42,7 @@ require_once('helpers.php');
     </div>
 
     <table class="tasks">
-        <?php foreach ($tasks as $task) : ?>
+        <?php foreach ($project_tasks as $task) : ?>
             <?php
             if ($task['status'] && $show_complete_tasks == 1) {
                 continue;
