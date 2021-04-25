@@ -22,6 +22,10 @@ if ($project_id) {
     $project_tasks = $tasks;
 }
 
+if (!$project_tasks) {
+    open_404_page();
+}
+
 function get_tasks_count($tasks, $project)
 {
     $tasks_count = 0;
@@ -55,7 +59,7 @@ $page_content = include_template('main.php', [
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'user_name' => $user_name,
-    'title' => 'readme: популярное',
+    'title' => 'doingsdone: проекты',
 ]);
 
-print($layout_content);
+echo($layout_content);
