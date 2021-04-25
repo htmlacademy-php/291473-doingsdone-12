@@ -12,7 +12,14 @@ $projects = select_query($con, "SELECT p.* FROM projects p INNER JOIN users u ON
 $tasks = select_query($con, "SELECT t.*, p.* FROM tasks t INNER JOIN users u ON u.id = t.user_id INNER JOIN projects p ON p.id = t.project_id WHERE u.id = '$user_id'");
 $project_tasks = get_project_tasks ($project_id, $tasks);
 
-$page_content = include_template('main.php', [
+function get_new_task() {
+    print_r($_POST);
+
+}
+
+get_new_task();
+
+$page_content = include_template('add.php', [
     'projects' => $projects,
     'tasks' => $tasks,
     'project_tasks' => $project_tasks,
@@ -22,7 +29,7 @@ $page_content = include_template('main.php', [
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
-    'title' => 'doingsdone: проекты',
+    'title' => 'doingsdone: добавление задачи',
 ]);
 
 echo($layout_content);
