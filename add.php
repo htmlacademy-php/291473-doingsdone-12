@@ -21,8 +21,6 @@ $fields_map = [
 $required_fields = ['name','project',];
 $errors = check_validity($required_fields, $fields_map);
 
-print_r($errors);
-
 $page_content = include_template('add.php', [
     'projects' => $projects,
     'tasks' => $tasks,
