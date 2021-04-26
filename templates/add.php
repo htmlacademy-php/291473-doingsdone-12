@@ -4,7 +4,7 @@ require_once('helpers.php');
 $name = $_POST['name'] ?? '';
 $project = $_POST['project'] ?? '';
 $date = $_POST['date'] ?? '';
-$file = $_POST['file'] ?? '';
+$file = $_FILE['file'] ?? '';
 ?>
 <section class="content__side">
         <h2 class="content__side-heading">Проекты</h2>
@@ -26,20 +26,22 @@ $file = $_POST['file'] ?? '';
       <main class="content__main">
         <h2 class="content__main-heading">Добавление задачи</h2>
 
-        <form class="form"  action="add.php" method="post" autocomplete="off">
+        <form class="form"  action="add.php" method="post" enctype="multipart/form-data" autocomplete="off">
           <div class="form__row">
             <label class="form__label" for="name">Название <sup>*</sup></label>
 
-            <input class="form__input" type="text" name="name" id="name" value="<?= $name ?>" placeholder="Введите название">
+            <input class="form__input <?= $errors['name'] ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= $name ?>" placeholder="Введите название">
+            <?= $errors['name'] ? '<p class="form__message">Заполните это поле</p>' : '' ?>
           </div>
 
           <div class="form__row">
             <label class="form__label" for="project">Проект <sup>*</sup></label>
 
-            <select class="form__input form__input--select" name="project" id="project">
+            <select class="form__input form__input--select <?= $errors['project'] ? 'form__input--error' : '' ?>" name="project" id="project">
                 <?php foreach ($projects as $project) : ?>
-                    <option value="<?= $project ?>"><?= $project['project_name'] ?></option>
+                    <option value="<?= $project['id'] ?>"><?= $project['project_name'] ?></option>
                 <?php endforeach; ?>
+                <?= $errors['project'] ? '<p class="form__message">Заполните это поле</p>' : '' ?>
             </select>
           </div>
 

@@ -70,3 +70,45 @@ function get_project_tasks ($project_id, $tasks) {
     return $project_tasks;
 }
 
+function check_empty_field($required_fields, $fields_map)
+{
+    $errors = array();
+    foreach ($required_fields as $field) {
+        if (empty($_POST[$field])) {
+            $errors[$field] = $fields_map[$field] . ' Поле не заполнено.';
+        }
+    }
+    return $errors;
+}
+
+function check_date_format($date, $errors) {
+    $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
+
+    if (!$date_format) {
+        $errors['date'] = $fields_map['date'] . ' Ошибка в формате даты.';
+    }
+};
+
+function check_validity($required_fields, $fields_map)
+{
+    $errors = [];
+    if (empty($_POST)) {
+        return null;
+    }
+
+    $name = $_POST['name'];
+    $project = $_POST['project'];
+    $date = $_POST['date'];
+    $file_name = $_FILES['file']['name'];
+    $file_path = 'uploads/';
+    $file_url = 'uploads/' . $file_name;
+    move_uploaded_file($_FILES['file']['tmp_name'], $file_path . $file_name);
+
+    $errors = check_empty_field($required_fields, $fields_map);
+    check_date_format($date, $errors);
+
+    if (!empty($errors)) {
+        //print_r($errors);
+        return $errors;
+    }
+}
