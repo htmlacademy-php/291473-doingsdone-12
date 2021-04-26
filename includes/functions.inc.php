@@ -70,9 +70,8 @@ function get_project_tasks ($project_id, $tasks) {
     return $project_tasks;
 }
 
-function check_empty_field($required_fields, $fields_map)
+function check_empty_field($required_fields, $fields_map, $errors)
 {
-    $errors = array();
     foreach ($required_fields as $field) {
         if (empty($_POST[$field])) {
             $errors[$field] = $fields_map[$field] . ' Поле не заполнено.';
@@ -84,14 +83,22 @@ function check_empty_field($required_fields, $fields_map)
 function check_date_format($date, $errors) {
     $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
 
+    $current_date = strtotime(date('d-m-Y'));
+    $task_date = strtotime($date);
+    
     if (!$date_format) {
         $errors['date'] = $fields_map['date'] . ' Ошибка в формате даты.';
+    } else if ($task_date < $current_date) {
+        $errors['date'] = $fields_map['date'] . ' Дата должна быть больше или равна текущей.';
     }
+
+    return $errors;
 };
 
 function check_validity($required_fields, $fields_map)
 {
-    $errors = [];
+    $errors = array();
+
     if (empty($_POST)) {
         return null;
     }
@@ -104,8 +111,8 @@ function check_validity($required_fields, $fields_map)
     $file_url = 'uploads/' . $file_name;
     move_uploaded_file($_FILES['file']['tmp_name'], $file_path . $file_name);
 
-    $errors = check_empty_field($required_fields, $fields_map);
-    check_date_format($date, $errors);
+    check_empty_field($required_fields, $fields_map, $errors);
+    $errors = check_date_format($date, $errors);
 
     if (!empty($errors)) {
         //print_r($errors);
