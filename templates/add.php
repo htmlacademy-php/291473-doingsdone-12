@@ -31,7 +31,7 @@ $file = $_FILE['file'] ?? '';
             <label class="form__label" for="name">Название <sup>*</sup></label>
 
             <input class="form__input <?= $errors['name'] ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= $name ?>" placeholder="Введите название">
-            <?= $errors['name'] ? '<p class="form__message">Заполните это поле</p>' : '' ?>
+            <?= $errors['name'] ? '<p class="form__message">Название обязательно для заполнения</p>' : '' ?>
           </div>
 
           <div class="form__row">
@@ -41,7 +41,7 @@ $file = $_FILE['file'] ?? '';
                 <?php foreach ($projects as $project) : ?>
                     <option value="<?= $project['id'] ?>"><?= $project['project_name'] ?></option>
                 <?php endforeach; ?>
-                <?= $errors['project'] ? '<p class="form__message">Заполните это поле</p>' : '' ?>
+                <?= $errors['project'] ? '<p class="form__message">Выберите существующий проект</p>' : '' ?>
             </select>
           </div>
 
@@ -49,6 +49,7 @@ $file = $_FILE['file'] ?? '';
             <label class="form__label" for="date">Дата выполнения</label>
 
             <input class="form__input form__input--date <?= $errors['date'] ? 'form__input--error' : '' ?>" type="text" name="date" id="date" value="<?= $date ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
+            <?= $errors['date'] ? '<p class="form__message">Дата должна быть больше или равна текущей</p>' : '' ?>
           </div>
 
           <div class="form__row">

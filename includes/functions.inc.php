@@ -69,68 +69,48 @@ function get_project_tasks ($project_id, $tasks) {
     return $project_tasks;
 }
 
-function check_name_field($name)
-{
-    $errors = array();
-    if (empty($name)) {
-        $errors['name'] = $fields_map['name'] . ' Поле не заполнено.';
-    }
-    return $errors;
-}
-
-function check_date_format($date) {
-    $errors = array();
-    $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
-
-    $current_date = strtotime(date('d-m-Y'));
-    $task_date = strtotime($date);
-    
-    if (!$date_format) {
-        $errors['date'] = $fields_map['date'] . ' Ошибка в формате даты.';
-    } else if ($task_date < $current_date) {
-        $errors['date'] = $fields_map['date'] . ' Дата должна быть больше или равна текущей.';
-    }
-
-    return $errors;
-};
-
-function check_project_id($con, $project_id) {
-    $errors = array();
-    $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$project_id'");
-
-    if (!$selected_project) {
-        $errors['project'] = $fields_map['project'] . ' Проект не найден.';
-    }
-
-    return $errors;
-}
-
-function check_validity($con, $required_fields, $fields_map)
+function check_validity($con, $user_id)
 {
     if (empty($_POST)) {
         return null;
     }
 
     $name = $_POST['name'];
-    $project = $_POST['project'];
+    $project_id = $_POST['project'];
     $date = $_POST['date'];
     $file_name = $_FILES['file']['name'];
+
     $file_path = 'uploads/';
     $file_url = 'uploads/' . $file_name;
     move_uploaded_file($_FILES['file']['tmp_name'], $file_path . $file_name);
+    
+    $errors = array();
 
-    //$empty_fields = check_empty_field($required_fields, $fields_map, $errors);
+    if (empty($name)) {
+        $errors['name'] = 'Поле не заполнено.';
+    }
 
-    $name_field_errors = check_name_field($name);
-    $date_field_errors = check_date_format($date);
-    $project_field_errors = check_project_id($con, $project);
+    $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
+    $current_date = strtotime(date('d-m-Y'));
+    $task_date = strtotime($date);
+    if (!$date_format) {
+        $errors['date'] = 'Ошибка в формате даты';
+    } else if ($task_date < $current_date) {
+        $errors['date'] = 'Дата должна быть больше или равна текущей';
+    }
 
-    //print_r($_POST);
-
-    $errors = array_merge($name_field_errors, $date_field_errors, $project_field_errors);
+    $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$project_id'");
+    if (!$selected_project) {
+        $errors['project'] = 'Проект не найден';
+    }
     print_r($errors);
     if ($errors) {
         return $errors;
     }
-    
+
+    $status = 0;
+    $post_query = "INSERT INTO tasks (create_date, status, task_name, file_link, deadline, user_id, project_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $post_query);
+    mysqli_stmt_bind_param($stmt, 'sisssii', $current_date, $status, $name, $file_url, $task_date, $user_id, $project_id);
+    mysqli_stmt_execute($stmt);
 }
