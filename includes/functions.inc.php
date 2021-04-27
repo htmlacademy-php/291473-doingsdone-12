@@ -1,5 +1,4 @@
 <?php
-
 function select_query($con, $sql, $type = 'all')
 {
     mysqli_set_charset($con, "utf8");
@@ -70,13 +69,11 @@ function get_project_tasks ($project_id, $tasks) {
     return $project_tasks;
 }
 
-function check_empty_field($required_fields, $fields_map)
+function check_name_field($name)
 {
     $errors = array();
-    foreach ($required_fields as $field) {
-        if (empty($_POST[$field])) {
-            $errors[$field] = $fields_map[$field] . ' Поле не заполнено.';
-        }
+    if (empty($name)) {
+        $errors['name'] = $fields_map['name'] . ' Поле не заполнено.';
     }
     return $errors;
 }
@@ -97,7 +94,18 @@ function check_date_format($date) {
     return $errors;
 };
 
-function check_validity($required_fields, $fields_map)
+function check_project_id($con, $project_id) {
+    $errors = array();
+    $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$project_id'");
+
+    if (!$selected_project) {
+        $errors['project'] = $fields_map['project'] . ' Проект не найден.';
+    }
+
+    return $errors;
+}
+
+function check_validity($con, $required_fields, $fields_map)
 {
     if (empty($_POST)) {
         return null;
@@ -111,11 +119,16 @@ function check_validity($required_fields, $fields_map)
     $file_url = 'uploads/' . $file_name;
     move_uploaded_file($_FILES['file']['tmp_name'], $file_path . $file_name);
 
-    $empty_fields = check_empty_field($required_fields, $fields_map, $errors);
-    $date_field_errors = check_date_format($date, $errors);
-    
-    $errors = array_merge($empty_fields, $date_field_errors);
+    //$empty_fields = check_empty_field($required_fields, $fields_map, $errors);
 
+    $name_field_errors = check_name_field($name);
+    $date_field_errors = check_date_format($date);
+    $project_field_errors = check_project_id($con, $project);
+
+    //print_r($_POST);
+
+    $errors = array_merge($name_field_errors, $date_field_errors, $project_field_errors);
+    print_r($errors);
     if ($errors) {
         return $errors;
     }

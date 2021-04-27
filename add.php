@@ -19,7 +19,7 @@ $fields_map = [
     'file' => 'Файл',
 ];
 $required_fields = ['name','project',];
-$errors = check_validity($required_fields, $fields_map);
+$errors = check_validity($con, $required_fields, $fields_map);
 
 $page_content = include_template('add.php', [
     'projects' => $projects,
