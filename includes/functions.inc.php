@@ -79,6 +79,7 @@ function check_validity($con, $user_id)
     $project_id = $_POST['project'];
     $date = $_POST['date'];
     $file_name = $_FILES['file']['name'];
+    $current_date = date('Y-m-d');
 
     $file_path = 'uploads/';
     $file_url = 'uploads/' . $file_name;
@@ -90,12 +91,16 @@ function check_validity($con, $user_id)
         $errors['name'] = 'Поле не заполнено.';
     }
 
+    if ($errors) {
+        return $errors;
+    }
+
     $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
-    $current_date = strtotime(date('d-m-Y'));
-    $task_date = strtotime($date);
+    $current_date_mark = strtotime($current_date);
+    $task_date_mark = strtotime($date);
     if (!$date_format) {
         $errors['date'] = 'Ошибка в формате даты';
-    } else if ($task_date < $current_date) {
+    } else if ($task_date_mark < $current_date_mark) {
         $errors['date'] = 'Дата должна быть больше или равна текущей';
     }
 
@@ -103,14 +108,14 @@ function check_validity($con, $user_id)
     if (!$selected_project) {
         $errors['project'] = 'Проект не найден';
     }
-    print_r($errors);
-    if ($errors) {
-        return $errors;
-    }
 
     $status = 0;
     $post_query = "INSERT INTO tasks (create_date, status, task_name, file_link, deadline, user_id, project_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $post_query);
-    mysqli_stmt_bind_param($stmt, 'sisssii', $current_date, $status, $name, $file_url, $task_date, $user_id, $project_id);
+    mysqli_stmt_bind_param($stmt, 'sisssii', $current_date, $status, $name, $file_url, $date, $user_id, $project_id);
     mysqli_stmt_execute($stmt);
+
+    header('Location: /');
+    exit();
+    return null;
 }
