@@ -91,14 +91,10 @@ function check_validity($con, $user_id)
         $errors['name'] = 'Поле не заполнено.';
     }
 
-    if ($errors) {
-        return $errors;
-    }
-
     $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
     $current_date_mark = strtotime($current_date);
     $task_date_mark = strtotime($date);
-    if (!$date_format) {
+    if (!$date_format || !$date) {
         $errors['date'] = 'Ошибка в формате даты';
     } else if ($task_date_mark < $current_date_mark) {
         $errors['date'] = 'Дата должна быть больше или равна текущей';
@@ -107,6 +103,10 @@ function check_validity($con, $user_id)
     $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$project_id'");
     if (!$selected_project) {
         $errors['project'] = 'Проект не найден';
+    }
+
+    if ($errors) {
+        return $errors;
     }
 
     $status = 0;

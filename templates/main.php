@@ -42,7 +42,7 @@ require_once('helpers.php');
     </div>
 
     <table class="tasks">
-        <?php foreach ($project_tasks as $task) : ?>
+        <?php foreach ($project_tasks as $task_number => $task) : ?>
             <?php
             if ($task['status'] && $show_complete_tasks == 1) {
                 continue;
@@ -57,7 +57,9 @@ require_once('helpers.php');
                 </td>
 
                 <td class="task__file">
-                    <a class="download-link" href="#">Home.psd</a>
+                    <?php if ($task['file_link']): ?>
+                        <a class="download-link" href="<?= $task['file_link'] ?>"><?= $task['file_link'] ?></a>
+                    <?php endif; ?>
                 </td>
 
                 <td class="task__date"><?= $task['deadline'] ?></td>
