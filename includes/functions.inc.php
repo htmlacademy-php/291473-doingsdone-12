@@ -69,12 +69,24 @@ function get_project_tasks ($project_id, $tasks) {
     return $project_tasks;
 }
 
+function check_empty_field($required_fields)
+{
+    $errors = array();
+    foreach ($required_fields as $field) {
+        if (empty($_POST[$field])) {
+            $errors[$field] = 'Поле не заполнено.';
+        }
+    }
+
+    return $errors;
+}
+
 function check_validity($con, $user_id)
 {
     if (empty($_POST)) {
         return null;
     }
-
+    
     $name = $_POST['name'];
     $project_id = $_POST['project'];
     $date = $_POST['date'];
@@ -84,12 +96,8 @@ function check_validity($con, $user_id)
     $file_path = 'uploads/';
     $file_url = 'uploads/' . $file_name;
     move_uploaded_file($_FILES['file']['tmp_name'], $file_path . $file_name);
-    
-    $errors = array();
 
-    if (empty($name)) {
-        $errors['name'] = 'Поле не заполнено.';
-    }
+    $errors = check_empty_field(['name']);
 
     $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
     $current_date_mark = strtotime($current_date);
@@ -118,4 +126,37 @@ function check_validity($con, $user_id)
     header('Location: /');
     exit();
     return null;
+}
+
+function check_registration_validity($con)
+{
+    if (empty($_POST)) {
+        return null;
+    }
+
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $name = $_POST['name'];
+    
+    $required_fields = ['email', 'password', 'name'];
+    $errors = check_empty_field($required_fields);
+
+    if (empty($errors)) {
+        $email_format = filter_var($email, FILTER_VALIDATE_EMAIL);
+        if (!$email_format) {
+            $errors['email'] = $fields_map['email'] . 'Неверный формат.';
+        }
+
+        $already_saved_email = select_query($con, "SELECT email FROM users WHERE email = '$email'");
+        print($already_saved_email);
+        if ($email == $already_saved_email[0]['email']) {
+            $errors['email'] = $fields_map['email'] . 'Уже есть в системе.';
+        }
+    }
+
+    if (!empty($errors)) {
+        return $errors;
+    }
+
+
 }
