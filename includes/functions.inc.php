@@ -123,7 +123,7 @@ function check_validity($con, $user_id)
     mysqli_stmt_bind_param($stmt, 'sisssii', $current_date, $status, $name, $file_url, $date, $user_id, $project_id);
     mysqli_stmt_execute($stmt);
 
-    header('Location: /');
+    header('Location: index.php');
     exit();
     return null;
 }
@@ -137,6 +137,7 @@ function check_registration_validity($con)
     $email = $_POST['email'];
     $password = $_POST['password'];
     $name = $_POST['name'];
+    $current_date = date('Y-m-d');
     
     $required_fields = ['email', 'password', 'name'];
     $errors = check_empty_field($required_fields);
@@ -148,7 +149,7 @@ function check_registration_validity($con)
         }
 
         $already_saved_email = select_query($con, "SELECT email FROM users WHERE email = '$email'");
-        print($already_saved_email);
+
         if ($email == $already_saved_email[0]['email']) {
             $errors['email'] = $fields_map['email'] . 'Уже есть в системе.';
         }
@@ -158,5 +159,14 @@ function check_registration_validity($con)
         return $errors;
     }
 
+    // Сохраняет данные пользователя в таблицу пользователей;
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+    $post_query = "INSERT INTO users (registration_date, email, user_name, password) VALUES (?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $post_query);
+    mysqli_stmt_bind_param($stmt, 'ssss', $current_date, $email, $name, $password_hash);
+    mysqli_stmt_execute($stmt);
+    header('Location: index.php');
+    exit();
+    return null;
 
 }

@@ -13,6 +13,7 @@ $tasks = select_query($con, "SELECT t.*, p.* FROM tasks t INNER JOIN users u ON 
 $project_tasks = get_project_tasks ($project_id, $tasks);
 
 $errors = check_registration_validity($con);
+
 print_r($errors);
 $page_content = include_template('register.php', [
     'errors' => $errors,
