@@ -12,7 +12,7 @@ $projects = select_query($con, "SELECT p.* FROM projects p INNER JOIN users u ON
 $tasks = select_query($con, "SELECT t.*, p.* FROM tasks t INNER JOIN users u ON u.id = t.user_id INNER JOIN projects p ON p.id = t.project_id WHERE u.id = '$user_id' ORDER BY t.id DESC");
 $project_tasks = get_project_tasks ($project_id, $tasks);
 
-$errors = check_validity($con, $user_id);
+$errors = check_new_task_validity($con, $user_id);
 
 $page_content = include_template('add.php', [
     'projects' => $projects,

@@ -81,7 +81,7 @@ function check_empty_field($required_fields)
     return $errors;
 }
 
-function check_validity($con, $user_id)
+function check_new_task_validity($con, $user_id)
 {
     if (empty($_POST)) {
         return null;
@@ -90,12 +90,16 @@ function check_validity($con, $user_id)
     $name = $_POST['name'];
     $project_id = $_POST['project'];
     $date = $_POST['date'];
-    $file_name = $_FILES['file']['name'];
     $current_date = date('Y-m-d');
+    $file_name = $_FILES['file']['name'];
 
-    $file_path = 'uploads/';
-    $file_url = 'uploads/' . $file_name;
-    move_uploaded_file($_FILES['file']['tmp_name'], $file_path . $file_name);
+    if ($file_name) {
+        $file_path = 'uploads/';
+        $file_url = 'uploads/' . $file_name;
+        move_uploaded_file($_FILES['file']['tmp_name'], $file_path . $file_name);
+    } else {
+        $file_url = '';
+    }
 
     $errors = check_empty_field(['name']);
 
@@ -114,6 +118,8 @@ function check_validity($con, $user_id)
     }
 
     if ($errors) {
+        print_r($errors);
+        print('ok');
         return $errors;
     }
 
@@ -145,13 +151,12 @@ function check_registration_validity($con)
     if (empty($errors)) {
         $email_format = filter_var($email, FILTER_VALIDATE_EMAIL);
         if (!$email_format) {
-            $errors['email'] = $fields_map['email'] . 'Неверный формат.';
+            $errors['email'] = 'Неверный формат.';
         }
 
         $already_saved_email = select_query($con, "SELECT email FROM users WHERE email = '$email'");
-
-        if ($email == $already_saved_email[0]['email']) {
-            $errors['email'] = $fields_map['email'] . 'Уже есть в системе.';
+        if (isset($already_saved_email[0]['email'])) {
+            $errors['email'] = 'Уже есть в системе.';
         }
     }
 
@@ -168,5 +173,4 @@ function check_registration_validity($con)
     header('Location: index.php');
     exit();
     return null;
-
 }

@@ -10,8 +10,7 @@ CREATE TABLE users (
     email VARCHAR(128) NOT NULL,
     user_name VARCHAR(128) NOT NULL,
     password CHAR(64) NOT NULL,
-    UNIQUE INDEX email(email),
-    UNIQUE INDEX user_name(user_name)
+    UNIQUE INDEX email(email)
 );
 
 CREATE TABLE projects (
