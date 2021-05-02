@@ -174,3 +174,68 @@ function check_registration_validity($con)
     exit();
     return null;
 }
+
+// function check_auth_validity($con) {
+//     if (empty($_POST)) {
+//         return null;
+//     }
+
+//     $email = $_POST['email'];
+//     $password = $_POST['password'];
+// }
+
+function authenticate($con)
+{
+    if (empty($_POST)) {
+        return null;
+    }
+
+    session_start();
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $required = ['email', 'password'];
+        $errors = [];
+        foreach ($required as $field) {
+            if (empty($_POST[$field])) {
+                $errors[$field] = 'Это поле надо заполнить';
+            }
+        }
+
+        if (empty($errors)) {
+            $email = mysqli_real_escape_string($con, $_POST['email']);
+            $user_query = select_query($con, "SELECT id, email, password FROM users WHERE email = '$email'", 'assoc');
+            $user = $user_query ? $user_query : null;
+
+            if (isset($user)) {
+                if (password_verify($_POST['password'], $user['password'])) {
+                    $_SESSION['user'] = $user;
+                } else {
+                    $errors['password'] = 'Неверный пароль';
+                }
+            } elseif (!isset($user)) {
+                $errors['user'] = 'Такой пользователь не найден';
+            }
+        }
+    } else {
+        $page_content = include_template('index.php', []);
+
+        if (isset($_SESSION['user'])) {
+            header("Location: /index.php");
+            exit();
+        }
+    }
+
+    if (empty($errors)) {
+        header("Location: /index.php");
+        exit();
+    }
+
+    return $errors;
+}
+
+function check_authentication()
+{
+    if (!isset($_SESSION['user'])) {
+        header("Location: /index.php");
+        exit();
+    }
+}
