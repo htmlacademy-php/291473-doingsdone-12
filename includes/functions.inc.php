@@ -118,8 +118,6 @@ function check_new_task_validity($con, $user_id)
     }
 
     if ($errors) {
-        print_r($errors);
-        print('ok');
         return $errors;
     }
 
@@ -191,6 +189,7 @@ function authenticate($con)
     }
 
     session_start();
+    print_r($_SESSION['user']);
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $required = ['email', 'password'];
         $errors = [];
@@ -202,7 +201,7 @@ function authenticate($con)
 
         if (empty($errors)) {
             $email = mysqli_real_escape_string($con, $_POST['email']);
-            $user_query = select_query($con, "SELECT id, email, password FROM users WHERE email = '$email'", 'assoc');
+            $user_query = select_query($con, "SELECT * FROM users WHERE email = '$email'", 'assoc');
             $user = $user_query ? $user_query : null;
 
             if (isset($user)) {
@@ -230,12 +229,4 @@ function authenticate($con)
     }
 
     return $errors;
-}
-
-function check_authentication()
-{
-    if (!isset($_SESSION['user'])) {
-        header("Location: /index.php");
-        exit();
-    }
 }

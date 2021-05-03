@@ -3,16 +3,18 @@ require_once('helpers.php');
 require_once('includes/functions.inc.php');
 require_once('includes/db_connect.inc.php');
 
-$page_content = include_template('auth.php', []);
+$errors = authenticate($con);
+
+$page_content = include_template('auth.php', [
+    'errors' => $errors,
+]);
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'title' => 'doingsdone: авторизация',
 ]);
 
-$errors = authenticate($con);
-
-print_r($errors);
+print_r($_SESSION['user']);
 
 // $page_content = include_template('main.php', [
 //     'projects' => $projects,

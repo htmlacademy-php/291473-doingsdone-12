@@ -20,6 +20,7 @@ $password = $_POST['password'] ?? '';
 
             <input class="form__input <?= $errors['email'] ? 'form__input--error' : '' ?>" type="text" name="email" id="email" value="<?= $email ?>" placeholder="Введите e-mail">
             <?= isset($errors['email']) ? '<p class="form__message">E-mail введён некорректно</p>' : '' ?>
+            <?= isset($errors['user']) ? '<p class="form__message">' . $errors['user'] . '</p>' : '' ?>
         </div>
 
         <div class="form__row">
