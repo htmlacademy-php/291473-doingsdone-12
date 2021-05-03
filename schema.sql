@@ -33,3 +33,5 @@ CREATE TABLE tasks (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (project_id) REFERENCES projects(id)
 );
+
+CREATE FULLTEXT INDEX tasks_ft_search ON tasks(task_name);
