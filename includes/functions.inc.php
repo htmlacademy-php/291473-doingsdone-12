@@ -184,12 +184,11 @@ function check_registration_validity($con)
 
 function authenticate($con)
 {
-    if (empty($_POST)) {
+    session_start();
+    if (empty($_POST) && empty($_SESSION['user'])) {
         return null;
     }
 
-    session_start();
-    print_r($_SESSION['user']);
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $required = ['email', 'password'];
         $errors = [];
@@ -215,8 +214,6 @@ function authenticate($con)
             }
         }
     } else {
-        $page_content = include_template('index.php', []);
-
         if (isset($_SESSION['user'])) {
             header("Location: /index.php");
             exit();
