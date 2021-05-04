@@ -62,10 +62,6 @@ function get_project_tasks ($project_id, $tasks) {
         $project_tasks = $tasks;
     }
 
-    if (!$project_tasks) {
-        open_404_page();
-    }
-
     return $project_tasks;
 }
 
