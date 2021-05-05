@@ -14,4 +14,4 @@ $layout_content = include_template('layout.php', [
     'title' => 'doingsdone: авторизация',
 ]);
 
-echo($layout_content);
+echo ($layout_content);

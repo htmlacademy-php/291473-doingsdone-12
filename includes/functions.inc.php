@@ -41,22 +41,26 @@ function open_404_page()
 {
     $page_content = include_template('page-404.php');
     $layout_content = include_template('layout.php', [
-    'title' => 'doingsdone: страница не найдена',
-    'content' => $page_content,
-  ]);
+        'title' => 'doingsdone: страница не найдена',
+        'content' => $page_content,
+    ]);
 
-    echo($layout_content);
+    echo ($layout_content);
     http_response_code(404);
     exit();
 }
 
-function get_project_tasks ($project_id, $tasks) {
+function get_project_tasks($project_id, $tasks)
+{
     if ($project_id) {
         $project_tasks = [];
-        foreach($tasks as $task) {
+        foreach ($tasks as $task) {
             if ($task['project_id'] == $project_id) {
                 $project_tasks[] = $task;
             }
+        }
+        if (empty($project_tasks)) {
+            open_404_page();
         }
     } else {
         $project_tasks = $tasks;
@@ -82,7 +86,7 @@ function check_new_task_validity($con, $user_id)
     if (empty($_POST)) {
         return null;
     }
-    
+
     $name = $_POST['name'];
     $project_id = $_POST['project'];
     $date = $_POST['date'];
@@ -138,7 +142,7 @@ function check_registration_validity($con)
     $password = $_POST['password'];
     $name = $_POST['name'];
     $current_date = date('Y-m-d');
-    
+
     $required_fields = ['email', 'password', 'name'];
     $errors = check_empty_field($required_fields);
 

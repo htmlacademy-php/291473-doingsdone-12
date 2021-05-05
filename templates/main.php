@@ -41,33 +41,33 @@ require_once('helpers.php');
         </label>
     </div>
 
-    <?php if(!$project_tasks): ?>
+    <?php if (!$project_tasks) : ?>
         <p>Ничего не найдено по вашему запросу</p>
-    <?php else: ?>
-    <table class="tasks">
-        <?php foreach ($project_tasks as $task_number => $task) : ?>
-            <?php
-            if ($task['status'] && $show_complete_tasks == 1) {
-                continue;
-            }
-            ?>
-            <tr class="tasks__item task <?= $task['status'] ? 'task--completed' : '' ?> <?= get_task_time($task) ?>">
-                <td class="task__select">
-                    <label class="checkbox task__checkbox">
-                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
-                        <span class="checkbox__text"><?= htmlspecialchars($task['task_name']) ?></span>
-                    </label>
-                </td>
+    <?php else : ?>
+        <table class="tasks">
+            <?php foreach ($project_tasks as $task_number => $task) : ?>
+                <?php
+                if ($task['status'] && $show_complete_tasks == 1) {
+                    continue;
+                }
+                ?>
+                <tr class="tasks__item task <?= $task['status'] ? 'task--completed' : '' ?> <?= get_task_time($task) ?>">
+                    <td class="task__select">
+                        <label class="checkbox task__checkbox">
+                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
+                            <span class="checkbox__text"><?= htmlspecialchars($task['task_name']) ?></span>
+                        </label>
+                    </td>
 
-                <td class="task__file">
-                    <?php if ($task['file_link']): ?>
-                        <a class="download-link" href="<?= $task['file_link'] ?>"><?= $task['file_link'] ?></a>
-                    <?php endif; ?>
-                </td>
+                    <td class="task__file">
+                        <?php if ($task['file_link']) : ?>
+                            <a class="download-link" href="<?= $task['file_link'] ?>"><?= $task['file_link'] ?></a>
+                        <?php endif; ?>
+                    </td>
 
-                <td class="task__date"><?= $task['deadline'] ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-    <?php endif;?>
+                    <td class="task__date"><?= $task['deadline'] ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php endif; ?>
 </main>
