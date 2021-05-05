@@ -16,7 +16,7 @@ $project_tasks = get_project_tasks ($project_id, $tasks);
 
 $errors = check_new_task_validity($con, $user_id);
 
-$page_content = include_template('add.php', [
+$page_content = include_template('add-task.php', [
     'projects' => $projects,
     'tasks' => $tasks,
     'project_tasks' => $project_tasks,
