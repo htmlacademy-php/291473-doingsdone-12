@@ -132,6 +132,36 @@ function check_new_task_validity($con, $user_id)
     return null;
 }
 
+function check_new_project_validity($con, $user_id)
+{
+    if (empty($_POST)) {
+        return null;
+    }
+
+    $project_name = $_POST['project_name'];
+
+    $errors = check_empty_field(['project_name']);
+
+    $already_created_project = select_query($con, "SELECT * FROM projects WHERE user_id = '$user_id' AND project_name = '$project_name'");;
+    if ($already_created_project) {
+        $errors['project_name'] = 'Такой проект уже есть в системе';
+    }
+
+    if (!empty($errors)) {
+        return $errors;
+    }
+
+    $post_query = "INSERT INTO projects (project_name, user_id) VALUES (?, ?)";
+    $stmt = mysqli_prepare($con, $post_query);
+    mysqli_stmt_bind_param($stmt, 'si', $project_name, $user_id);
+    mysqli_stmt_execute($stmt);
+
+    header('Location: index.php');
+    exit();
+    return null;
+
+}
+
 function check_registration_validity($con)
 {
     if (empty($_POST)) {
