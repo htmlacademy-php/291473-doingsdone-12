@@ -88,7 +88,7 @@ function check_new_task_validity($con, $user_id)
     }
 
     $name = $_POST['name'];
-    $project_id = $_POST['project'];
+    $project_id = $_POST['project'] ?? '';
     $date = $_POST['date'];
     $current_date = date('Y-m-d');
     $file_name = $_FILES['file']['name'];
@@ -101,7 +101,7 @@ function check_new_task_validity($con, $user_id)
         $file_url = '';
     }
 
-    $errors = check_empty_field(['name']);
+    $errors = check_empty_field(['name', 'project']);
 
     $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
     $current_date_mark = strtotime($current_date);
@@ -112,9 +112,11 @@ function check_new_task_validity($con, $user_id)
         $errors['date'] = 'Дата должна быть больше или равна текущей';
     }
 
-    $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$project_id'");
-    if (!$selected_project) {
-        $errors['project'] = 'Проект не найден';
+    if ($project_id) {
+        $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$project_id'");
+        if (!$selected_project) {
+            $errors['project'] = 'Выберите существующий проект';
+        }
     }
 
     if ($errors) {
@@ -159,7 +161,6 @@ function check_new_project_validity($con, $user_id)
     header('Location: index.php');
     exit();
     return null;
-
 }
 
 function check_registration_validity($con)
@@ -256,4 +257,24 @@ function authenticate($con)
     }
 
     return $errors;
+}
+
+function get_task_status($con, $user_id)
+{
+    $task_status = filter_input(INPUT_GET, 'check', FILTER_VALIDATE_INT);
+    $task_id = filter_input(INPUT_GET, 'task_id', FILTER_VALIDATE_INT);
+
+    if ($task_status == 1) {
+        mysqli_query($con, "UPDATE tasks SET status = 1 WHERE id = '$task_id' AND user_id = '$user_id'");
+    }
+
+    if ($task_status == 0) {
+        mysqli_query($con, "UPDATE tasks SET status = 0 WHERE id = '$task_id' AND user_id = '$user_id'");
+    }
+
+    if(isset($task_status)) {
+        header("Location: /index.php");
+        exit();
+    }
+
 }

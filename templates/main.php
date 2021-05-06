@@ -47,14 +47,14 @@ require_once('helpers.php');
         <table class="tasks">
             <?php foreach ($project_tasks as $task_number => $task) : ?>
                 <?php
-                if ($task['status'] && $show_complete_tasks == 1) {
+                if ($task['status'] && $show_complete_tasks == 0) {
                     continue;
                 }
                 ?>
                 <tr class="tasks__item task <?= $task['status'] ? 'task--completed' : '' ?> <?= get_task_time($task) ?>">
                     <td class="task__select">
                         <label class="checkbox task__checkbox">
-                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
+                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?= $task['id'] ?>" <?= $task['status'] == 1 ? 'checked' : '' ?>>
                             <span class="checkbox__text"><?= htmlspecialchars($task['task_name']) ?></span>
                         </label>
                     </td>

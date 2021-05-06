@@ -17,8 +17,7 @@ CREATE TABLE projects (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
     project_name VARCHAR(128) NOT NULL,
     user_id INT UNSIGNED NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    UNIQUE INDEX project_name(project_name)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE tasks (
