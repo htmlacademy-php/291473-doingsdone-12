@@ -29,10 +29,10 @@ require_once('helpers.php');
 
     <div class="tasks-controls">
         <nav class="tasks-switch">
-            <a href="/" class="tasks-switch__item tasks-switch__item--active">Все задачи</a>
-            <a href="/?date=today" class="tasks-switch__item">Повестка дня</a>
-            <a href="/?date=tomorrow" class="tasks-switch__item">Завтра</a>
-            <a href="/?date=overdue" class="tasks-switch__item">Просроченные</a>
+            <a href="/" class="tasks-switch__item <?= !$date ? 'tasks-switch__item--active' : '' ?>">Все задачи</a>
+            <a href="/?date=today" class="tasks-switch__item <?= $date == 'today' ? 'tasks-switch__item--active' : '' ?>">Повестка дня</a>
+            <a href="/?date=tomorrow" class="tasks-switch__item <?= $date == 'tomorrow' ? 'tasks-switch__item--active' : '' ?>">Завтра</a>
+            <a href="/?date=overdue" class="tasks-switch__item <?= $date == 'overdue' ? 'tasks-switch__item--active' : '' ?>">Просроченные</a>
         </nav>
 
         <label class="checkbox">

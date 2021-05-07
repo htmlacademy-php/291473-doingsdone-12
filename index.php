@@ -37,6 +37,7 @@ if (isset($_SESSION['user'])) {
         'show_complete_tasks' => $show_complete_tasks,
         'project_id' => $project_id,
         'search' => $search,
+        'date' => $date,
     ]);
     $layout_content = include_template('layout.php', [
         'content' => $page_content,
