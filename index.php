@@ -9,7 +9,7 @@ if (isset($_SESSION['user'])) {
 
     $user_id = $_SESSION['user']['id'];
     $show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_VALIDATE_INT);
-    get_task_status($con, $user_id);
+    get_task_status($con, $user_id);  
 
     $search = filter_input(INPUT_GET, 'search') ?? '';
     if ($search) {
@@ -23,10 +23,57 @@ if (isset($_SESSION['user'])) {
         $tasks = select_query($con, "SELECT t.*, p.project_name FROM tasks t INNER JOIN users u ON u.id = t.user_id INNER JOIN projects p ON p.id = t.project_id WHERE u.id = '$user_id' ORDER BY t.id");
     }
 
+    // Фильтрует задачи;
+    $time = filter_input(INPUT_GET, 'time', FILTER_DEFAULT);
+
+    if ($time == 'today') {
+        $time = date('Y-m-d');
+        $today_tasks = [];
+        foreach ($tasks as $task) {
+            $task_time = $task['deadline'];
+    
+            if ($task_time == $time) {
+                $today_tasks[] = $task;
+            }
+        }
+        $tasks = $today_tasks;
+    }
+
+    if ($time == 'tomorrow') {
+        $time = date('Y-m-d', strtotime("+1 day"));
+        $today_tasks = [];
+        foreach ($tasks as $task) {
+            $task_time = $task['deadline'];
+    
+            if ($task_time == $time) {
+                $today_tasks[] = $task;
+            }
+        }
+        $tasks = $today_tasks;
+    }
+
+    if ($time == 'overdue') {
+        $time = date('Y-m-d');
+
+        $today_tasks = [];
+        foreach ($tasks as $task) {
+            $task_time = $task['deadline'];
+    
+            if ($task_time < $time) {
+                $today_tasks[] = $task;
+            }
+        }
+        $tasks = $today_tasks;
+    }
+
+
+
+
+
     $project_id = filter_input(INPUT_GET, 'project-id', FILTER_VALIDATE_INT);
     $projects = select_query($con, "SELECT p.* FROM projects p INNER JOIN users u ON u.id = p.user_id WHERE u.id = '$user_id' ORDER BY p.id DESC");
     $project_tasks = get_project_tasks($project_id, $tasks);
-    //print_r($project_tasks);
+
     $page_content = include_template('main.php', [
         'projects' => $projects,
         'tasks' => $tasks,

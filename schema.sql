@@ -26,7 +26,7 @@ CREATE TABLE tasks (
     status TINYINT DEFAULT 0,
     task_name VARCHAR(128) NOT NULL,
     file_link VARCHAR(128),
-    deadline DATETIME NOT NULL,
+    deadline DATE NOT NULL,
     user_id INT UNSIGNED NOT NULL,
     project_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
