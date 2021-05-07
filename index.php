@@ -23,52 +23,8 @@ if (isset($_SESSION['user'])) {
         $tasks = select_query($con, "SELECT t.*, p.project_name FROM tasks t INNER JOIN users u ON u.id = t.user_id INNER JOIN projects p ON p.id = t.project_id WHERE u.id = '$user_id' ORDER BY t.id");
     }
 
-    // Фильтрует задачи;
-    $time = filter_input(INPUT_GET, 'time', FILTER_DEFAULT);
-
-    if ($time == 'today') {
-        $time = date('Y-m-d');
-        $today_tasks = [];
-        foreach ($tasks as $task) {
-            $task_time = $task['deadline'];
-    
-            if ($task_time == $time) {
-                $today_tasks[] = $task;
-            }
-        }
-        $tasks = $today_tasks;
-    }
-
-    if ($time == 'tomorrow') {
-        $time = date('Y-m-d', strtotime("+1 day"));
-        $today_tasks = [];
-        foreach ($tasks as $task) {
-            $task_time = $task['deadline'];
-    
-            if ($task_time == $time) {
-                $today_tasks[] = $task;
-            }
-        }
-        $tasks = $today_tasks;
-    }
-
-    if ($time == 'overdue') {
-        $time = date('Y-m-d');
-
-        $today_tasks = [];
-        foreach ($tasks as $task) {
-            $task_time = $task['deadline'];
-    
-            if ($task_time < $time) {
-                $today_tasks[] = $task;
-            }
-        }
-        $tasks = $today_tasks;
-    }
-
-
-
-
+    $date = filter_input(INPUT_GET, 'date', FILTER_DEFAULT);
+    $tasks = get_task_date ($date, $tasks);
 
     $project_id = filter_input(INPUT_GET, 'project-id', FILTER_VALIDATE_INT);
     $projects = select_query($con, "SELECT p.* FROM projects p INNER JOIN users u ON u.id = p.user_id WHERE u.id = '$user_id' ORDER BY p.id DESC");

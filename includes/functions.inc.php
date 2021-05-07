@@ -278,3 +278,44 @@ function get_task_status($con, $user_id)
     }
 
 }
+
+function get_task_date ($date, $tasks) {
+    $today = date('Y-m-d');
+    $filtered_tasks = [];
+
+    if ($date == 'today') {
+        foreach ($tasks as $task) {
+            $task_date = $task['deadline'];
+    
+            if ($task_date == $today) {
+                $filtered_tasks[] = $task;
+            }
+        }
+        return $filtered_tasks;
+    }
+
+    if ($date == 'tomorrow') {
+        $tomorrow = date('Y-m-d', strtotime("+1 day"));
+        foreach ($tasks as $task) {
+            $task_date = $task['deadline'];
+
+            if ($task_date == $tomorrow) {
+                $filtered_tasks[] = $task;
+          }
+       }
+      return $filtered_tasks;
+    }
+
+    if ($date == 'overdue') {
+        foreach ($tasks as $task) {
+            $task_date = $task['deadline'];
+
+            if ($task_date < $today) {
+                $filtered_tasks[] = $task;
+          }
+       }
+      return $filtered_tasks;
+    }
+
+    return $tasks;
+}
