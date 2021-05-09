@@ -1,0 +1,15 @@
+{
+    "name": "dkrech07/doingsdone",
+    "description": "Web application for easy to-do list management",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Дмитрий Кречетников",
+            "email": "dkrech07@gmail.com"
+        }
+    ],
+    "require": {
+        "swiftmailer/swiftmailer": "^6.2"
+    }
+}
