@@ -12,28 +12,21 @@ foreach ($opened_tasks as $opened_task) {
 $users_ids = array_unique($users_ids_not_unique);
 
 $messages = [];
-$user_messages = [];
 foreach ($users_ids as $user_id) {
-   
-
-    // print($user_id);
-    // print('<br>');
-    // print('<br>');
+    $user_tasks = '';
     foreach ($opened_tasks as $key => $opened_task) {
-    // print_r($opened_task);
-    // print('<br>');
-    // print('<br>');
-
         if ($opened_task['user_id'] == $user_id) {
-            $user_messages[$user_id] = $opened_task;
+            //array_push($user_tasks, $opened_task['task_name']);
+            $user_tasks = $user_tasks . ' ' . $opened_task['task_name'];
         }
     }
-    $messages[] = $user_messages; 
+    //array_push($messages, $user_tasks); 
+    $messages[$user_id] = $user_tasks;
 }
 
 print_r($messages);
 
-// print_r($opened_tasks);
+//print_r($opened_tasks);
 // print('<br>');
 // print('<br>');
 // print_r($users_ids);
