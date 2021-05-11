@@ -30,7 +30,7 @@ $file = $_FILE['file'] ?? '';
     <div class="form__row">
       <label class="form__label" for="name">Название <sup>*</sup></label>
 
-      <input class="form__input <?= $errors['name'] ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= $name ?>" placeholder="Введите название">
+      <input class="form__input <?= isset($errors['name']) ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= $name ?>" placeholder="Введите название">
       <?= isset($errors['name']) ? '<p class="form__message">Название обязательно для заполнения</p>' : '' ?>
     </div>
 
@@ -48,7 +48,7 @@ $file = $_FILE['file'] ?? '';
     <div class="form__row">
       <label class="form__label" for="date">Дата выполнения</label>
 
-      <input class="form__input form__input--date <?= $errors['date'] ? 'form__input--error' : '' ?>" type="text" name="date" id="date" value="<?= $date ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
+      <input class="form__input form__input--date <?= isset($errors['date']) ? 'form__input--error' : '' ?>" type="text" name="date" id="date" value="<?= $date ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
       <?= isset($errors['date']) ? '<p class="form__message">Дата должна быть больше или равна текущей</p>' : '' ?>
     </div>
 

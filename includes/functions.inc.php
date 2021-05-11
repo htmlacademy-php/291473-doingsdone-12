@@ -193,7 +193,6 @@ function check_registration_validity($con)
         return $errors;
     }
 
-    // Сохраняет данные пользователя в таблицу пользователей;
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
     $post_query = "INSERT INTO users (registration_date, email, user_name, password) VALUES (?, ?, ?, ?)";
     $stmt = mysqli_prepare($con, $post_query);
@@ -203,15 +202,6 @@ function check_registration_validity($con)
     exit();
     return null;
 }
-
-// function check_auth_validity($con) {
-//     if (empty($_POST)) {
-//         return null;
-//     }
-
-//     $email = $_POST['email'];
-//     $password = $_POST['password'];
-// }
 
 function authenticate($con)
 {

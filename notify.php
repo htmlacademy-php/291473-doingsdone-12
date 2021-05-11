@@ -6,7 +6,6 @@ require_once('vendor/autoload.php');
 $today = date('Y-m-d');
 $time = date('H:i:s');
 
-if ($time == '10:00:00') {
     $opened_tasks = select_query($con, "SELECT u.email, u.user_name, t. task_name, t.user_id, t.deadline FROM tasks t INNER JOIN users u ON u.id = t.user_id WHERE t.status = 0 AND t.deadline = '$today'");
 
     $users_lits = [];
@@ -54,5 +53,5 @@ if ($time == '10:00:00') {
         $mailer = new Swift_Mailer($transport);
         $mailer->send($message);
     }
-}
+
 

@@ -18,7 +18,7 @@ $password = $_POST['password'] ?? '';
         <div class="form__row">
             <label class="form__label" for="email">E-mail <sup>*</sup></label>
 
-            <input class="form__input <?= $errors['email'] ? 'form__input--error' : '' ?>" type="text" name="email" id="email" value="<?= $email ?>" placeholder="Введите e-mail">
+            <input class="form__input <?= isset($errors['email']) ? 'form__input--error' : '' ?>" type="text" name="email" id="email" value="<?= $email ?>" placeholder="Введите e-mail">
             <?= isset($errors['email']) ? '<p class="form__message">E-mail введён некорректно</p>' : '' ?>
             <?= isset($errors['user']) ? '<p class="form__message">' . $errors['user'] . '</p>' : '' ?>
         </div>
@@ -26,7 +26,7 @@ $password = $_POST['password'] ?? '';
         <div class="form__row">
             <label class="form__label" for="password">Пароль <sup>*</sup></label>
 
-            <input class="form__input <?= $errors['password'] ? 'form__input--error' : '' ?>" type="password" name="password" id="password" value="<?= $password ?>" placeholder="Введите пароль">
+            <input class="form__input <?= isset($errors['password']) ? 'form__input--error' : '' ?>" type="password" name="password" id="password" value="<?= $password ?>" placeholder="Введите пароль">
             <?= isset($errors['password']) ? '<p class="form__message">Неверный пароль</p>' : '' ?>
         </div>
 
