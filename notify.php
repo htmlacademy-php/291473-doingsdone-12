@@ -1,7 +1,7 @@
 <?php
 require_once('includes/functions.inc.php');
 require_once('includes/db_connect.inc.php');
-//require_once('vendor/autoload.php');
+require_once('vendor/autoload.php');
 
 $today = date('Y-m-d');
 $opened_tasks = select_query($con, "SELECT u.email, t. task_name, t.user_id, t.deadline FROM tasks t INNER JOIN users u ON u.id = t.user_id WHERE t.status = 0 AND t.deadline = '$today'");
@@ -29,22 +29,21 @@ foreach ($messages as $email => $email_message) {
     print($email);
     $login = $email;
     $email_title = 'Тестовое сообщение';
-    
+
     // Конфигурация траспорта
     $transport = (new Swift_SmtpTransport("smtp.mailtrap.io", 2525))
-    ->setUsername('85b3b85f4a89a3')
-     ->setPassword('3f60ebb5c55821')
- ;
+        ->setUsername('85b3b85f4a89a3')
+        ->setPassword('3f60ebb5c55821');
 
- // Формирование сообщения
-$message = new Swift_Message($email_title);
-$message->setFrom("keks@phpdemo.ru", "keks@phpdemo.ru");
-$message->setTo([$email => $login]);
-$message->setBody($email_message);
+    // Формирование сообщения
+    $message = new Swift_Message($email_title);
+    $message->setFrom("keks@phpdemo.ru", "keks@phpdemo.ru");
+    $message->setTo([$email => $login]);
+    $message->setBody($email_message);
 
- // Отправка сообщения
-$mailer = new Swift_Mailer($transport);
-$mailer->send($message);
+    // Отправка сообщения
+    $mailer = new Swift_Mailer($transport);
+    $mailer->send($message);
 }
 
 // $opened_tasks = select_query($con, "SELECT * FROM tasks WHERE status = 0 AND deadline = '$today'");
