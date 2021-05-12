@@ -4,9 +4,6 @@ require_once('includes/functions.inc.php');
 require_once('includes/db_connect.inc.php');
 
 session_start();
-
-// показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
 $user_id = $_SESSION['user']['id'];
 
 $project_id = filter_input(INPUT_GET, 'project-id', FILTER_VALIDATE_INT);
@@ -20,7 +17,6 @@ $page_content = include_template('add-task.php', [
     'projects' => $projects,
     'tasks' => $tasks,
     'project_tasks' => $project_tasks,
-    'show_complete_tasks' => $show_complete_tasks,
     'project_id' => $project_id,
     'errors' => $errors,
 ]);

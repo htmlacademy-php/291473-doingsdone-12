@@ -7,7 +7,6 @@ $today = date('Y-m-d');
 $time = date('H:i:s');
 
     $opened_tasks = select_query($con, "SELECT u.email, u.user_name, t. task_name, t.user_id, t.deadline FROM tasks t INNER JOIN users u ON u.id = t.user_id WHERE t.status = 0 AND t.deadline = '$today'");
-
     $users_lits = [];
     
     foreach ($opened_tasks as $opened_task) {
