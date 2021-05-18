@@ -103,13 +103,17 @@ function check_new_task_validity($con, $user_id)
 
     $errors = check_empty_field(['name', 'project']);
 
-    $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
-    $current_date_mark = strtotime($current_date);
-    $task_date_mark = strtotime($date);
-    if (!$date_format || !$date) {
-        $errors['date'] = 'Ошибка в формате даты';
-    } else if ($task_date_mark < $current_date_mark) {
-        $errors['date'] = 'Дата должна быть больше или равна текущей';
+    if ($date) {
+        $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
+        $current_date_mark = strtotime($current_date);
+        $task_date_mark = strtotime($date);
+        if (!$date_format) {
+            $errors['date'] = 'Ошибка в формате даты';
+        } else if ($task_date_mark < $current_date_mark) {
+            $errors['date'] = 'Дата должна быть больше или равна текущей';
+        } 
+    } else {
+        $date = NULL;
     }
 
     if ($project_id) {
