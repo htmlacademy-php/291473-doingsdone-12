@@ -50,6 +50,17 @@ function open_404_page()
     exit();
 }
 
+function check_field_length($required_fields) {
+    $errors = array();
+    foreach ($required_fields as $field) {
+        if (mb_strlen($_POST[$field]) > 20) {
+            $errors[$field] = 'Максимальная длина текста 20 символов';
+        }
+    }
+
+    return $errors;
+}
+
 function get_project_tasks($project_id, $tasks)
 {
     if ($project_id) {
@@ -102,6 +113,9 @@ function check_new_task_validity($con, $user_id)
     }
 
     $errors = check_empty_field(['name', 'project']);
+    if (empty($errors)) {
+        $errors = check_field_length(['name', 'project']);
+    }
 
     if ($date) {
         $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
@@ -147,6 +161,9 @@ function check_new_project_validity($con, $user_id)
     $project_name = $_POST['project_name'];
 
     $errors = check_empty_field(['project_name']);
+    if (empty($errors)) {
+        $errors = check_field_length(['project_name']);
+    }
 
     $already_created_project = select_query($con, "SELECT * FROM projects WHERE user_id = '$user_id' AND project_name = '$project_name'");;
     if ($already_created_project) {
@@ -179,7 +196,11 @@ function check_registration_validity($con)
     $current_date = date('Y-m-d');
 
     $required_fields = ['email', 'password', 'name'];
+
     $errors = check_empty_field($required_fields);
+    if (empty($errors)) {
+        $errors = check_field_length($required_fields, $errors);
+    }
 
     if (empty($errors)) {
         $email_format = filter_var($email, FILTER_VALIDATE_EMAIL);
