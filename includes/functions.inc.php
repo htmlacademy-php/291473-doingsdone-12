@@ -31,7 +31,7 @@ function get_task_time($task)
     $current_time = time();
     $task_time = strtotime($task['deadline']);
     $task_deadline = ($task_time - $current_time) / 3600;
- 
+
     if ($task_deadline <= 24) {
         return 'task--important';
     }
@@ -50,11 +50,14 @@ function open_404_page()
     exit();
 }
 
-function check_field_length($required_fields) {
+function check_field_length($required_fields)
+{
     $errors = array();
     foreach ($required_fields as $field) {
-        if (mb_strlen($_POST[$field]) > 20) {
-            $errors[$field] = 'Максимальная длина текста 20 символов';
+        if ($field === 'password' && mb_strlen($_POST[$field]) > 64) {
+            $errors[$field] = 'Максимальная длина текста 64 символа';
+        } else if (mb_strlen($_POST[$field]) > 128) {
+            $errors[$field] = 'Максимальная длина текста 128 символов';
         }
     }
 
@@ -85,7 +88,7 @@ function check_empty_field($required_fields)
     $errors = array();
     foreach ($required_fields as $field) {
         if (empty($_POST[$field])) {
-            $errors[$field] = 'Поле не заполнено.';
+            $errors[$field] = 'Поле не заполнено';
         }
     }
 
@@ -125,7 +128,7 @@ function check_new_task_validity($con, $user_id)
             $errors['date'] = 'Ошибка в формате даты';
         } else if ($task_date_mark < $current_date_mark) {
             $errors['date'] = 'Дата должна быть больше или равна текущей';
-        } 
+        }
     } else {
         $date = NULL;
     }
@@ -287,21 +290,21 @@ function get_task_status($con, $user_id)
         mysqli_query($con, "UPDATE tasks SET status = 0 WHERE id = '$task_id' AND user_id = '$user_id'");
     }
 
-    if(isset($task_status)) {
+    if (isset($task_status)) {
         header("Location: /index.php");
         exit();
     }
-
 }
 
-function get_task_date ($date, $tasks) {
+function get_task_date($date, $tasks)
+{
     $today = date('Y-m-d');
     $filtered_tasks = [];
 
     if ($date == 'today') {
         foreach ($tasks as $task) {
             $task_date = $task['deadline'];
-    
+
             if ($task_date == $today) {
                 $filtered_tasks[] = $task;
             }
@@ -316,9 +319,9 @@ function get_task_date ($date, $tasks) {
 
             if ($task_date == $tomorrow) {
                 $filtered_tasks[] = $task;
-          }
-       }
-      return $filtered_tasks;
+            }
+        }
+        return $filtered_tasks;
     }
 
     if ($date == 'overdue') {
@@ -327,9 +330,9 @@ function get_task_date ($date, $tasks) {
 
             if ($task_date < $today) {
                 $filtered_tasks[] = $task;
-          }
-       }
-      return $filtered_tasks;
+            }
+        }
+        return $filtered_tasks;
     }
 
     return $tasks;

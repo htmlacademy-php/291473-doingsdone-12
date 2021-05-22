@@ -31,7 +31,7 @@ $file = $_FILE['file'] ?? '';
       <label class="form__label" for="name">Название <sup>*</sup></label>
 
       <input class="form__input <?= isset($errors['name']) ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= $name ?>" placeholder="Введите название">
-      <?= isset($errors['name']) ? '<p class="form__message">Название обязательно для заполнения</p>' : '' ?>
+      <?= isset($errors['name']) ? '<p class="form__message">' . $errors['name'] . '</p>' : '' ?>
     </div>
 
     <div class="form__row">
