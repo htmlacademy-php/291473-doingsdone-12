@@ -1,6 +1,4 @@
 <?php
-require_once('helpers.php');
-
 $name = $_POST['name'] ?? '';
 $project = $_POST['project'] ?? '';
 $date = $_POST['date'] ?? '';

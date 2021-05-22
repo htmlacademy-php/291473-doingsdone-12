@@ -1,5 +1,4 @@
 <?php
-require_once('helpers.php');
 $project_name = $_POST['project_name'] ?? '';
 ?>
 
