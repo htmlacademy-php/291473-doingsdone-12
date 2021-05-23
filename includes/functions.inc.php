@@ -27,11 +27,11 @@ function select_query($con, $sql, $type = 'all')
     mysqli_set_charset($con, "utf8");
     $result = mysqli_query($con, $sql) or trigger_error("Ошибка в запросе к базе данных: " . mysqli_error($con), E_USER_ERROR);
 
-    if ($type == 'assoc') {
+    if ($type === 'assoc') {
         return mysqli_fetch_assoc($result);
     }
 
-    if ($type == 'row') {
+    if ($type === 'row') {
         return mysqli_fetch_row($result)[0];
     }
 
@@ -42,7 +42,7 @@ function get_tasks_count($tasks, $project)
 {
     $tasks_count = 0;
     foreach ($tasks as $task) {
-        if ($task['project_name'] == $project) {
+        if ($task['project_name'] === $project) {
             $tasks_count++;
         }
     }
@@ -92,7 +92,7 @@ function get_project_tasks($project_id, $tasks)
     if ($project_id) {
         $project_tasks = [];
         foreach ($tasks as $task) {
-            if ($task['project_id'] == $project_id) {
+            if (intval($task['project_id']) === $project_id) {
                 $project_tasks[] = $task;
             }
         }
@@ -261,7 +261,7 @@ function authenticate($con)
         return null;
     }
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $required = ['email', 'password'];
         $errors = [];
         foreach ($required as $field) {
@@ -305,11 +305,11 @@ function get_task_status($con, $user_id)
     $task_status = filter_input(INPUT_GET, 'check', FILTER_VALIDATE_INT);
     $task_id = filter_input(INPUT_GET, 'task_id', FILTER_VALIDATE_INT);
 
-    if ($task_status == 1) {
+    if ($task_status === 1) {
         mysqli_query($con, "UPDATE tasks SET status = 1 WHERE id = '$task_id' AND user_id = '$user_id'");
     }
 
-    if ($task_status == 0) {
+    if ($task_status === 0) {
         mysqli_query($con, "UPDATE tasks SET status = 0 WHERE id = '$task_id' AND user_id = '$user_id'");
     }
 
@@ -324,30 +324,30 @@ function get_task_date($date, $tasks)
     $today = date('Y-m-d');
     $filtered_tasks = [];
 
-    if ($date == 'today') {
+    if ($date === 'today') {
         foreach ($tasks as $task) {
             $task_date = $task['deadline'];
 
-            if ($task_date == $today) {
+            if ($task_date === $today) {
                 $filtered_tasks[] = $task;
             }
         }
         return $filtered_tasks;
     }
 
-    if ($date == 'tomorrow') {
+    if ($date === 'tomorrow') {
         $tomorrow = date('Y-m-d', strtotime("+1 day"));
         foreach ($tasks as $task) {
             $task_date = $task['deadline'];
 
-            if ($task_date == $tomorrow) {
+            if ($task_date === $tomorrow) {
                 $filtered_tasks[] = $task;
             }
         }
         return $filtered_tasks;
     }
 
-    if ($date == 'overdue') {
+    if ($date === 'overdue') {
         foreach ($tasks as $task) {
             $task_date = $task['deadline'];
 
