@@ -153,7 +153,7 @@ function check_new_task_validity($con, $user_id)
             $errors['date'] = 'Дата должна быть больше или равна текущей';
         }
     } else {
-        $date = NULL;
+        $date = null;
     }
 
     if ($project_id) {
