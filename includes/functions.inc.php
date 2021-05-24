@@ -22,6 +22,14 @@ function include_template($name, array $data = []) {
     return $result;
 }
 
+/**
+ * Выполняет подключение к базе данных
+ * В случае ошибки при подключении к БД, возвращает сообщение об ошибке
+ * @param  mixed $con
+ * @param  mixed $sql
+ * @param  mixed $type
+ * @return void
+ */
 function select_query($con, $sql, $type = 'all')
 {
     mysqli_set_charset($con, "utf8");
@@ -38,6 +46,12 @@ function select_query($con, $sql, $type = 'all')
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
+/**
+ * Считает количество задач по проектам
+ * @param  array $tasks Ассоциативный массив со списком задач
+ * @param  string $project Название проекта, для которого будет посчитано количество входящих в него задач
+ * @return integer
+ */
 function get_tasks_count($tasks, $project)
 {
     $tasks_count = 0;
@@ -49,6 +63,12 @@ function get_tasks_count($tasks, $project)
     return $tasks_count;
 };
 
+
+/**
+ * Проверяет, что до дедлайна задачи осталось не меньше 24 часов
+ * @param  array $task Ассоциативный массив с информацией по задаче
+ * @return string
+ */
 function get_task_time($task)
 {
     $current_time = time();
@@ -60,6 +80,10 @@ function get_task_time($task)
     }
 };
 
+/**
+ *  Подключает шаблон и выводит страницу 404, возвращает код ответа 404
+ * @return void
+ */
 function open_404_page()
 {
     $page_content = include_template('page-404.php');
@@ -73,6 +97,12 @@ function open_404_page()
     exit();
 }
 
+/**
+ * Определяет количество символов в полях формы
+ * Записывает сообщение о ошибке в массив errors, если при отправке формы количесто символов в поле больше допустимого
+ * @param  array $required_fields Нумерованный массив со списком полей для проверки
+ * @return array
+ */
 function check_field_length($required_fields)
 {
     $errors = array();
@@ -87,6 +117,13 @@ function check_field_length($required_fields)
     return $errors;
 }
 
+/**
+ * Из общего массива задач получает массив задач по id конкретного проекта
+ * Если id проекта отсутствует в базе данных, открывает 404 страницу
+ * @param  integer $project_id ID проекта, для которого следует получить список задач
+ * @param  array $tasks Общий список задач для всех проектов, авторизованного пользователя
+ * @return array
+ */
 function get_project_tasks($project_id, $tasks)
 {
     if ($project_id) {
@@ -106,6 +143,12 @@ function get_project_tasks($project_id, $tasks)
     return $project_tasks;
 }
 
+/**
+ * Проверяет поля формы на заполнение
+ * Записывает сообщение о ошибке в массив errors, если при отправке формы обязательное поле не заполнено
+ * @param  array $required_fields Нумерованный массив со списком полей для проверки на заполнение
+ * @return array
+ */
 function check_empty_field($required_fields)
 {
     $errors = array();
@@ -118,6 +161,12 @@ function check_empty_field($required_fields)
     return $errors;
 }
 
+/**
+ * Проверяет созданную задачу на корректность, сохраняет задачу базу данных и открывает страницу index.php
+ * @param  mixed $con Ресурс соединения
+ * @param  array $user_id ID пользователя, создавшего задачу
+ * @return null
+ */
 function check_new_task_validity($con, $user_id)
 {
     if (empty($_POST)) {
