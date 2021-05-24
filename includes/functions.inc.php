@@ -1,11 +1,13 @@
 <?php
+
 /**
  * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
  * @param string $name Путь к файлу шаблона относительно папки templates
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template($name, array $data = []) {
+function include_template($name, array $data = [])
+{
     $name = 'templates/' . $name;
     $result = '';
 
@@ -23,12 +25,12 @@ function include_template($name, array $data = []) {
 }
 
 /**
- * Выполняет подключение к базе данных
+ * Выполняет подключение и запрос к базе данных
  * В случае ошибки при подключении к БД, возвращает сообщение об ошибке
- * @param  mixed $con
- * @param  mixed $sql
- * @param  mixed $type
- * @return void
+ * @param  object $con Ресурс соединения
+ * @param  string $sql SQL-запрос к базе данных
+ * @param  string $type Варианты массива, полученного при обращении к базе данных
+ * @return array
  */
 function select_query($con, $sql, $type = 'all')
 {
@@ -37,10 +39,6 @@ function select_query($con, $sql, $type = 'all')
 
     if ($type === 'assoc') {
         return mysqli_fetch_assoc($result);
-    }
-
-    if ($type === 'row') {
-        return mysqli_fetch_row($result)[0];
     }
 
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -162,9 +160,9 @@ function check_empty_field($required_fields)
 }
 
 /**
- * Проверяет созданную задачу на корректность, сохраняет задачу базу данных и открывает страницу index.php
- * @param  mixed $con Ресурс соединения
- * @param  array $user_id ID пользователя, создавшего задачу
+ * Проверяет созданную задачу на корректность, сохраняет задачу в базу данных и открывает страницу index.php
+ * @param  object $con Ресурс соединения
+ * @param  integer $user_id ID авторизованного пользователя, создавшего задачу
  * @return null
  */
 function check_new_task_validity($con, $user_id)
@@ -227,6 +225,12 @@ function check_new_task_validity($con, $user_id)
     return null;
 }
 
+/**
+ * Проверяет созданный проект на корректность, сохраняет проект в базу данных и открывает страницу index.php
+ * @param  object $con Ресурс соединения
+ * @param  integer $user_id ID авторизованного пользователя, создавшего проект
+ * @return void
+ */
 function check_new_project_validity($con, $user_id)
 {
     if (empty($_POST)) {
@@ -259,6 +263,12 @@ function check_new_project_validity($con, $user_id)
     return null;
 }
 
+/**
+ * Проверяет данные регистрируемого пользователя на корректность (заполнение обязательных полей, есть ли email в базе, формат email)
+ * Сохраняет данные нового пользователя в базу данных
+ * @param  object $con Ресурс соединения
+ * @return void
+ */
 function check_registration_validity($con)
 {
     if (empty($_POST)) {
@@ -303,6 +313,12 @@ function check_registration_validity($con)
     return null;
 }
 
+/**
+ * Авторизует пользователя в системе, запускает сессию
+ * Выдает ошибку, в случае если неверно заполнены логин или пароль
+ * @param  object $con Ресурс соединения
+ * @return void
+ */
 function authenticate($con)
 {
     session_start();
@@ -349,6 +365,12 @@ function authenticate($con)
     return $errors;
 }
 
+/**
+ * Через get-запрос, определяет id и статус задачи, изменяет статус задачи на выполнено / невыполнено
+ * @param  object $con Ресурс соединения
+ * @param  integer $user_id ID авторизованного пользователя
+ * @return null
+ */
 function get_task_status($con, $user_id)
 {
     $task_status = filter_input(INPUT_GET, 'check', FILTER_VALIDATE_INT);
@@ -368,6 +390,12 @@ function get_task_status($con, $user_id)
     }
 }
 
+/**
+ * Получает ассоциативный массив со списком задач в зависимости от выбранного временного промежутка (все, завтрашние, сегодняшние, просроченные)
+ * @param  string $date Временной отрезок, для фильтрации задач: today, tomorrow, overdue
+ * @param  array $tasks Ассоциативный массив со списком задач
+ * @return array
+ */
 function get_task_date($date, $tasks)
 {
     $today = date('Y-m-d');
