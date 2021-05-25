@@ -1,6 +1,6 @@
 <?php
-require_once('includes/functions.inc.php');
-require_once('includes/db_connect.inc.php');
+require_once 'includes/functions.inc.php';
+require_once 'includes/db_connect.inc.php';
 
 session_start();
 
@@ -8,7 +8,7 @@ if (isset($_SESSION['user'])) {
 
     $user_id = $_SESSION['user']['id'];
     $show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_VALIDATE_INT);
-    get_task_status($con, $user_id);  
+    get_task_status($con, $user_id);
 
     $search = filter_input(INPUT_GET, 'search') ?? '';
     if ($search) {
@@ -23,7 +23,7 @@ if (isset($_SESSION['user'])) {
     }
 
     $date = filter_input(INPUT_GET, 'date', FILTER_DEFAULT);
-    $tasks = get_task_date ($date, $tasks);
+    $tasks = get_task_date($date, $tasks);
 
     $project_id = filter_input(INPUT_GET, 'project-id', FILTER_VALIDATE_INT);
     $projects = select_query($con, "SELECT p.* FROM projects p INNER JOIN users u ON u.id = p.user_id WHERE u.id = '$user_id' ORDER BY p.id DESC");

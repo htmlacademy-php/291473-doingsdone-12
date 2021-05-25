@@ -61,7 +61,6 @@ function get_tasks_count($tasks, $project)
     return $tasks_count;
 };
 
-
 /**
  * Проверяет, что до дедлайна задачи осталось не меньше 24 часов
  * @param  array $task Ассоциативный массив с информацией по задаче
@@ -244,7 +243,7 @@ function check_new_project_validity($con, $user_id)
         $errors = check_field_length(['project_name']);
     }
 
-    $already_created_project = select_query($con, "SELECT * FROM projects WHERE user_id = '$user_id' AND project_name = '$project_name'");;
+    $already_created_project = select_query($con, "SELECT * FROM projects WHERE user_id = '$user_id' AND project_name = '$project_name'");
     if ($already_created_project) {
         $errors['project_name'] = 'Такой проект уже есть в системе';
     }

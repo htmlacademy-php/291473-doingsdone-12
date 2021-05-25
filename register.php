@@ -1,6 +1,6 @@
 <?php
-require_once('includes/functions.inc.php');
-require_once('includes/db_connect.inc.php');
+require_once 'includes/functions.inc.php';
+require_once 'includes/db_connect.inc.php';
 
 session_start();
 if (isset($_SESSION['user']['id'])) {
@@ -19,4 +19,4 @@ $layout_content = include_template('layout.php', [
     'title' => 'doingsdone: авторизация/регистрация',
 ]);
 
-echo($layout_content);
+echo ($layout_content);

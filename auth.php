@@ -1,6 +1,6 @@
 <?php
-require_once('includes/functions.inc.php');
-require_once('includes/db_connect.inc.php');
+require_once 'includes/functions.inc.php';
+require_once 'includes/db_connect.inc.php';
 
 $errors = authenticate($con);
 
