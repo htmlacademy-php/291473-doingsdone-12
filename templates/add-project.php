@@ -10,7 +10,7 @@ $project_name = $_POST['project_name'] ?? '';
       <?php foreach ($projects as $project): ?>
         <li class="main-navigation__list-item <?=$project['id'] === $project_id ? 'main-navigation__list-item--active' : ''?>">
           <a class="main-navigation__list-item-link" href="?project-id=<?=$project['id']?>"><?=htmlspecialchars($project['project_name'])?></a>
-          <span class="main-navigation__list-item-count"><?=htmlspecialchars((get_tasks_count($tasks, $project['project_name']))?></span>
+          <span class="main-navigation__list-item-count"><?=get_tasks_count($tasks, $project['project_name'])?></span>
         </li>
       <?php endforeach;?>
     </ul>

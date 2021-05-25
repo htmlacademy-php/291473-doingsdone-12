@@ -44,10 +44,10 @@
         <table class="tasks">
             <?php foreach ($project_tasks as $task_number => $task): ?>
                 <?php
-if ($task['status'] && $show_complete_tasks === 0) {
-    continue;
-}
-?>
+                if ($task['status'] && $show_complete_tasks === 0) {
+                    continue;
+                }
+                ?>
                 <tr class="tasks__item task <?=$task['status'] ? 'task--completed' : ''?> <?=htmlspecialchars(get_task_time($task))?>">
                     <td class="task__select">
                         <label class="checkbox task__checkbox">
