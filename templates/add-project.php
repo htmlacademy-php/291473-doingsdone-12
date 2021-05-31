@@ -1,5 +1,4 @@
 <?php
-require_once('helpers.php');
 $project_name = $_POST['project_name'] ?? '';
 ?>
 
@@ -8,12 +7,12 @@ $project_name = $_POST['project_name'] ?? '';
 
   <nav class="main-navigation">
     <ul class="main-navigation__list">
-      <?php foreach ($projects as $project) : ?>
-        <li class="main-navigation__list-item <?= $project['id'] == $project_id ? 'main-navigation__list-item--active' : '' ?>">
-          <a class="main-navigation__list-item-link" href="?project-id=<?= $project['id'] ?>"><?= htmlspecialchars($project['project_name']) ?></a>
-          <span class="main-navigation__list-item-count"><?= get_tasks_count($tasks, $project['project_name']) ?></span>
+      <?php foreach ($projects as $project): ?>
+        <li class="main-navigation__list-item <?=$project['id'] === $project_id ? 'main-navigation__list-item--active' : ''?>">
+          <a class="main-navigation__list-item-link" href="?project-id=<?=$project['id']?>"><?=htmlspecialchars($project['project_name'])?></a>
+          <span class="main-navigation__list-item-count"><?=get_tasks_count($tasks, $project['project_name'])?></span>
         </li>
-      <?php endforeach; ?>
+      <?php endforeach;?>
     </ul>
   </nav>
 
@@ -27,8 +26,8 @@ $project_name = $_POST['project_name'] ?? '';
     <div class="form__row">
       <label class="form__label" for="project_name">Название <sup>*</sup></label>
 
-      <input class="form__input <?= $errors['project_name'] ? 'form__input--error' : '' ?>" type="text" name="project_name" id="project_name" value="<?= $project_name ?>" placeholder="Введите название проекта">
-      <?= isset($errors['project_name']) ? '<p class="form__message">' . $errors['project_name'] . '</p>' : '' ?>
+      <input class="form__input <?=$errors['project_name'] ? 'form__input--error' : ''?>" type="text" name="project_name" id="project_name" value="<?=$project_name?>" placeholder="Введите название проекта">
+      <?=isset($errors['project_name']) ? '<p class="form__message">' . $errors['project_name'] . '</p>' : ''?>
     </div>
 
     <div class="form__row form__row--controls">

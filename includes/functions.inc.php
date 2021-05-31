@@ -1,42 +1,86 @@
 <?php
+
+/**
+ * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
+ * @param string $name Путь к файлу шаблона относительно папки templates
+ * @param array $data Ассоциативный массив с данными для шаблона
+ * @return string Итоговый HTML
+ */
+function include_template($name, array $data = [])
+{
+    $name = 'templates/' . $name;
+    $result = '';
+
+    if (!is_readable($name)) {
+        return $result;
+    }
+
+    ob_start();
+    extract($data);
+    require $name;
+
+    $result = ob_get_clean();
+
+    return $result;
+}
+
+/**
+ * Выполняет подключение и запрос к базе данных
+ * В случае ошибки при подключении к БД, возвращает сообщение об ошибке
+ * @param  object $con Ресурс соединения
+ * @param  string $sql SQL-запрос к базе данных
+ * @param  string $type Варианты массива, полученного при обращении к базе данных
+ * @return array
+ */
 function select_query($con, $sql, $type = 'all')
 {
     mysqli_set_charset($con, "utf8");
     $result = mysqli_query($con, $sql) or trigger_error("Ошибка в запросе к базе данных: " . mysqli_error($con), E_USER_ERROR);
 
-    if ($type == 'assoc') {
+    if ($type === 'assoc') {
         return mysqli_fetch_assoc($result);
-    }
-
-    if ($type == 'row') {
-        return mysqli_fetch_row($result)[0];
     }
 
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
+/**
+ * Считает количество задач по проектам
+ * @param  array $tasks Ассоциативный массив со списком задач
+ * @param  string $project Название проекта, для которого будет посчитано количество входящих в него задач
+ * @return integer
+ */
 function get_tasks_count($tasks, $project)
 {
     $tasks_count = 0;
     foreach ($tasks as $task) {
-        if ($task['project_name'] == $project) {
+        if ($task['project_name'] === $project) {
             $tasks_count++;
         }
     }
     return $tasks_count;
 };
 
+/**
+ * Проверяет, что до дедлайна задачи осталось не меньше 24 часов
+ * @param  array $task Ассоциативный массив с информацией по задаче
+ * @return string
+ */
 function get_task_time($task)
 {
     $current_time = time();
     $task_time = strtotime($task['deadline']);
     $task_deadline = ($task_time - $current_time) / 3600;
- 
+
     if ($task_deadline <= 24) {
         return 'task--important';
     }
 };
 
+/**
+ *  Подключает шаблон и выводит страницу 404, возвращает код ответа 404
+ * @return void
+ */
 function open_404_page()
 {
     $page_content = include_template('page-404.php');
@@ -50,12 +94,39 @@ function open_404_page()
     exit();
 }
 
+/**
+ * Определяет количество символов в полях формы
+ * Записывает сообщение о ошибке в массив errors, если при отправке формы количесто символов в поле больше допустимого
+ * @param  array $required_fields Нумерованный массив со списком полей для проверки
+ * @return array
+ */
+function check_field_length($required_fields)
+{
+    $errors = array();
+    foreach ($required_fields as $field) {
+        if ($field === 'password' && mb_strlen($_POST[$field]) > 64) {
+            $errors[$field] = 'Максимальная длина текста 64 символа';
+        } else if (mb_strlen($_POST[$field]) > 128) {
+            $errors[$field] = 'Максимальная длина текста 128 символов';
+        }
+    }
+
+    return $errors;
+}
+
+/**
+ * Из общего массива задач получает массив задач по id конкретного проекта
+ * Если id проекта отсутствует в базе данных, открывает 404 страницу
+ * @param  integer $project_id ID проекта, для которого следует получить список задач
+ * @param  array $tasks Общий список задач для всех проектов, авторизованного пользователя
+ * @return array
+ */
 function get_project_tasks($project_id, $tasks)
 {
     if ($project_id) {
         $project_tasks = [];
         foreach ($tasks as $task) {
-            if ($task['project_id'] == $project_id) {
+            if (intval($task['project_id']) === $project_id) {
                 $project_tasks[] = $task;
             }
         }
@@ -69,18 +140,30 @@ function get_project_tasks($project_id, $tasks)
     return $project_tasks;
 }
 
+/**
+ * Проверяет поля формы на заполнение
+ * Записывает сообщение о ошибке в массив errors, если при отправке формы обязательное поле не заполнено
+ * @param  array $required_fields Нумерованный массив со списком полей для проверки на заполнение
+ * @return array
+ */
 function check_empty_field($required_fields)
 {
     $errors = array();
     foreach ($required_fields as $field) {
         if (empty($_POST[$field])) {
-            $errors[$field] = 'Поле не заполнено.';
+            $errors[$field] = 'Поле не заполнено';
         }
     }
 
     return $errors;
 }
 
+/**
+ * Проверяет созданную задачу на корректность, сохраняет задачу в базу данных и открывает страницу index.php
+ * @param  object $con Ресурс соединения
+ * @param  integer $user_id ID авторизованного пользователя, создавшего задачу
+ * @return null
+ */
 function check_new_task_validity($con, $user_id)
 {
     if (empty($_POST)) {
@@ -102,14 +185,21 @@ function check_new_task_validity($con, $user_id)
     }
 
     $errors = check_empty_field(['name', 'project']);
+    if (empty($errors)) {
+        $errors = check_field_length(['name', 'project']);
+    }
 
-    $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
-    $current_date_mark = strtotime($current_date);
-    $task_date_mark = strtotime($date);
-    if (!$date_format || !$date) {
-        $errors['date'] = 'Ошибка в формате даты';
-    } else if ($task_date_mark < $current_date_mark) {
-        $errors['date'] = 'Дата должна быть больше или равна текущей';
+    if ($date) {
+        $date_format = DateTime::CreateFromFormat('Y-m-d', $date);
+        $current_date_mark = strtotime($current_date);
+        $task_date_mark = strtotime($date);
+        if (!$date_format) {
+            $errors['date'] = 'Ошибка в формате даты';
+        } else if ($task_date_mark < $current_date_mark) {
+            $errors['date'] = 'Дата должна быть больше или равна текущей';
+        }
+    } else {
+        $date = null;
     }
 
     if ($project_id) {
@@ -134,6 +224,12 @@ function check_new_task_validity($con, $user_id)
     return null;
 }
 
+/**
+ * Проверяет созданный проект на корректность, сохраняет проект в базу данных и открывает страницу index.php
+ * @param  object $con Ресурс соединения
+ * @param  integer $user_id ID авторизованного пользователя, создавшего проект
+ * @return void
+ */
 function check_new_project_validity($con, $user_id)
 {
     if (empty($_POST)) {
@@ -143,8 +239,11 @@ function check_new_project_validity($con, $user_id)
     $project_name = $_POST['project_name'];
 
     $errors = check_empty_field(['project_name']);
+    if (empty($errors)) {
+        $errors = check_field_length(['project_name']);
+    }
 
-    $already_created_project = select_query($con, "SELECT * FROM projects WHERE user_id = '$user_id' AND project_name = '$project_name'");;
+    $already_created_project = select_query($con, "SELECT * FROM projects WHERE user_id = '$user_id' AND project_name = '$project_name'");
     if ($already_created_project) {
         $errors['project_name'] = 'Такой проект уже есть в системе';
     }
@@ -163,6 +262,12 @@ function check_new_project_validity($con, $user_id)
     return null;
 }
 
+/**
+ * Проверяет данные регистрируемого пользователя на корректность (заполнение обязательных полей, есть ли email в базе, формат email)
+ * Сохраняет данные нового пользователя в базу данных
+ * @param  object $con Ресурс соединения
+ * @return void
+ */
 function check_registration_validity($con)
 {
     if (empty($_POST)) {
@@ -175,7 +280,11 @@ function check_registration_validity($con)
     $current_date = date('Y-m-d');
 
     $required_fields = ['email', 'password', 'name'];
+
     $errors = check_empty_field($required_fields);
+    if (empty($errors)) {
+        $errors = check_field_length($required_fields, $errors);
+    }
 
     if (empty($errors)) {
         $email_format = filter_var($email, FILTER_VALIDATE_EMAIL);
@@ -203,6 +312,12 @@ function check_registration_validity($con)
     return null;
 }
 
+/**
+ * Авторизует пользователя в системе, запускает сессию
+ * Выдает ошибку, в случае если неверно заполнены логин или пароль
+ * @param  object $con Ресурс соединения
+ * @return void
+ */
 function authenticate($con)
 {
     session_start();
@@ -210,7 +325,7 @@ function authenticate($con)
         return null;
     }
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $required = ['email', 'password'];
         $errors = [];
         foreach ($required as $field) {
@@ -249,62 +364,74 @@ function authenticate($con)
     return $errors;
 }
 
+/**
+ * Через get-запрос, определяет id и статус задачи, изменяет статус задачи на выполнено / невыполнено
+ * @param  object $con Ресурс соединения
+ * @param  integer $user_id ID авторизованного пользователя
+ * @return null
+ */
 function get_task_status($con, $user_id)
 {
     $task_status = filter_input(INPUT_GET, 'check', FILTER_VALIDATE_INT);
     $task_id = filter_input(INPUT_GET, 'task_id', FILTER_VALIDATE_INT);
 
-    if ($task_status == 1) {
+    if ($task_status === 1) {
         mysqli_query($con, "UPDATE tasks SET status = 1 WHERE id = '$task_id' AND user_id = '$user_id'");
     }
 
-    if ($task_status == 0) {
+    if ($task_status === 0) {
         mysqli_query($con, "UPDATE tasks SET status = 0 WHERE id = '$task_id' AND user_id = '$user_id'");
     }
 
-    if(isset($task_status)) {
+    if (isset($task_status)) {
         header("Location: /index.php");
         exit();
     }
-
 }
 
-function get_task_date ($date, $tasks) {
+/**
+ * Получает ассоциативный массив со списком задач в зависимости от выбранного временного промежутка (все, завтрашние, сегодняшние, просроченные)
+ * @param  string $date Временной отрезок, для фильтрации задач: today, tomorrow, overdue
+ * @param  array $tasks Ассоциативный массив со списком задач
+ * @return array
+ */
+function get_task_date($date, $tasks)
+{
     $today = date('Y-m-d');
     $filtered_tasks = [];
 
-    if ($date == 'today') {
+    if ($date === 'today') {
         foreach ($tasks as $task) {
             $task_date = $task['deadline'];
-    
-            if ($task_date == $today) {
+
+            if ($task_date === $today) {
                 $filtered_tasks[] = $task;
             }
         }
         return $filtered_tasks;
     }
 
-    if ($date == 'tomorrow') {
+    if ($date === 'tomorrow') {
         $tomorrow = date('Y-m-d', strtotime("+1 day"));
         foreach ($tasks as $task) {
             $task_date = $task['deadline'];
 
-            if ($task_date == $tomorrow) {
+            if ($task_date === $tomorrow) {
                 $filtered_tasks[] = $task;
-          }
-       }
-      return $filtered_tasks;
+            }
+        }
+        return $filtered_tasks;
     }
 
-    if ($date == 'overdue') {
+    if ($date === 'overdue') {
         foreach ($tasks as $task) {
             $task_date = $task['deadline'];
 
             if ($task_date < $today) {
                 $filtered_tasks[] = $task;
-          }
-       }
-      return $filtered_tasks;
+            }
+        }
+        return $filtered_tasks;
     }
 
     return $tasks;
