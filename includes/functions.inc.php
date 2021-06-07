@@ -71,8 +71,8 @@ function get_task_time($task)
     $current_time = time();
     $task_time = strtotime($task['deadline']);
     $task_deadline = ($task_time - $current_time) / 3600;
-
-    if ($task_deadline <= 24) {
+    
+    if (isset($task['deadline']) && $task_deadline <= 24) {
         return 'task--important';
     }
 };
