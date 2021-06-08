@@ -378,42 +378,17 @@ function get_task_status($con, $user_id)
 
     if (isset($task_status)) {
         if (intval($checked_task['status']) === 0) {
-            mysqli_query($con, "UPDATE tasks SET status = 1 WHERE id = '$task_id' AND user_id = '$user_id'");
+            $status = mysqli_real_escape_string($con, 1);
         } else {
-            mysqli_query($con, "UPDATE tasks SET status = 0 WHERE id = '$task_id' AND user_id = '$user_id'");
+            $status = mysqli_real_escape_string($con, 0);
         }
+
+        mysqli_query($con, "UPDATE tasks SET status = '$status' WHERE id = '$task_id' AND user_id = '$user_id'");
+
 
         header("Location: /index.php");
         exit();
     }
-
-    // if (intval($checked_task['status']) === 0) {
-    //     // print('Статус задачи был равен 0');
-    //     mysqli_query($con, "UPDATE tasks SET status = 1 WHERE id = '$task_id' AND user_id = '$user_id'");
-    // } else {
-    //     // print('Статус задачи был равен 1');
-    //     mysqli_query($con, "UPDATE tasks SET status = 0 WHERE id = '$task_id' AND user_id = '$user_id'");
-    // }
-
-    // $task_status = $checked_task['status'];
-
-    // if ($task_status === 1) {
-    //     // mysqli_query($con, "UPDATE tasks SET status = 0 WHERE id = '$task_id' AND user_id = '$user_id'");
-    //     mysqli_query($con, "INSERT tasks status = 0 WHERE id = '$task_id' AND user_id = '$user_id'");
-    // } else {
-    //     // mysqli_query($con, "UPDATE tasks SET status = 1 WHERE id = '$task_id' AND user_id = '$user_id'");
-    //     mysqli_query($con, "INSERT tasks status = 1 WHERE id = '$task_id' AND user_id = '$user_id'");
-    // }
-
-
-    // if ($task_status === 0) {
-    //     mysqli_query($con, "UPDATE tasks SET status = 0 WHERE id = '$task_id' AND user_id = '$user_id'");
-    // }
-
-    // if (isset($task_status)) {
-    //     header("Location: /index.php");
-    //     exit();
-    // }
 }
 
 /**
