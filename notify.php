@@ -4,8 +4,8 @@ require_once 'includes/db_connect.inc.php';
 require_once 'vendor/autoload.php';
 
 $today = date('Y-m-d');
-
-$opened_tasks = select_query($con, "SELECT u.email, u.user_name, t. task_name, t.user_id, t.deadline FROM tasks t INNER JOIN users u ON u.id = t.user_id WHERE t.status = 0 AND t.deadline = '$today'");
+$safe_today = mysqli_real_escape_string($con, $today);
+$opened_tasks = select_query($con, "SELECT u.email, u.user_name, t. task_name, t.user_id, t.deadline FROM tasks t INNER JOIN users u ON u.id = t.user_id WHERE t.status = 0 AND t.deadline = '$safe_today'");
 $users_lits = [];
 
 foreach ($opened_tasks as $opened_task) {
