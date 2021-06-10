@@ -441,7 +441,7 @@ function get_task_date($date, $tasks)
         foreach ($tasks as $task) {
             $task_date = $task['deadline'];
 
-            if ($task_date < $today) {
+            if (isset($task_date) && $task_date < $today) {
                 $filtered_tasks[] = $task;
             }
         }

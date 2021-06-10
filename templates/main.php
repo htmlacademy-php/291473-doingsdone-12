@@ -44,7 +44,7 @@
         <table class="tasks">
             <?php foreach ($project_tasks as $task_number => $task): ?>
                 <?php
-                if ($task['status'] && $show_complete_tasks === 0) {
+                if ($task['status'] && intval($show_complete_tasks) === 0) {
                     continue;
                 }
                 ?>
