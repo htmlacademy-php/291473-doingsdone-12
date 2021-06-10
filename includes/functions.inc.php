@@ -162,12 +162,12 @@ function check_empty_field($required_fields)
  * Проверяет созданную задачу на корректность, сохраняет задачу в базу данных и открывает страницу index.php
  * @param  object $con Ресурс соединения
  * @param  integer $user_id ID авторизованного пользователя, создавшего задачу
- * @return null
+ * @return []
  */
 function check_new_task_validity($con, $user_id)
 {
     if (empty($_POST)) {
-        return null;
+        return [];
     }
 
     $name = $_POST['name'];
@@ -223,7 +223,7 @@ function check_new_task_validity($con, $user_id)
 
     header('Location: index.php');
     exit();
-    return null;
+    return [];
 }
 
 /**
@@ -235,7 +235,7 @@ function check_new_task_validity($con, $user_id)
 function check_new_project_validity($con, $user_id)
 {
     if (empty($_POST)) {
-        return null;
+        return [];
     }
 
     $project_name = $_POST['project_name'];
@@ -263,7 +263,7 @@ function check_new_project_validity($con, $user_id)
 
     header('Location: index.php');
     exit();
-    return null;
+    return [];
 }
 
 /**
@@ -275,7 +275,7 @@ function check_new_project_validity($con, $user_id)
 function check_registration_validity($con)
 {
     if (empty($_POST)) {
-        return null;
+        return [];
     }
 
     $email = $_POST['email'];
@@ -315,7 +315,7 @@ function check_registration_validity($con)
     mysqli_stmt_execute($stmt);
     header('Location: index.php');
     exit();
-    return null;
+    return [];
 }
 
 /**
@@ -328,7 +328,7 @@ function authenticate($con)
 {
     session_start();
     if (empty($_POST) && empty($_SESSION['user'])) {
-        return null;
+        return [];
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
