@@ -28,8 +28,8 @@ $file = $_FILE['file'] ?? '';
     <div class="form__row">
       <label class="form__label" for="name">Название <sup>*</sup></label>
 
-      <input class="form__input <?= isset($errors['name']) ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= $name ?>" placeholder="Введите название">
-      <?= isset($errors['name']) ? '<p class="form__message">' . $errors['name'] . '</p>' : '' ?>
+      <input class="form__input <?= isset($errors['name']) && is_array($errors) ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= $name ?>" placeholder="Введите название">
+      <?= isset($errors['name']) && is_array($errors) ? '<p class="form__message">' . $errors['name'] . '</p>' : '' ?>
     </div>
 
     <div class="form__row">
@@ -40,14 +40,14 @@ $file = $_FILE['file'] ?? '';
           <option value="<?= $project['id'] ?>"><?= $project['project_name'] ?></option>
         <?php endforeach; ?>
       </select>
-      <?= isset($errors['project']) ? '<p class="form__message">' . $errors['project'] . '</p>' : '' ?>
+      <?= isset($errors['project']) && is_array($errors) ? '<p class="form__message">' . $errors['project'] . '</p>' : '' ?>
     </div>
 
     <div class="form__row">
       <label class="form__label" for="date">Дата выполнения</label>
 
-      <input class="form__input form__input--date <?= isset($errors['date']) ? 'form__input--error' : '' ?>" type="text" name="date" id="date" value="<?= $date ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
-      <?= isset($errors['date']) ? '<p class="form__message">Дата должна быть больше или равна текущей</p>' : '' ?>
+      <input class="form__input form__input--date <?= isset($errors['date']) && is_array($errors) ? 'form__input--error' : '' ?>" type="text" name="date" id="date" value="<?= $date ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
+      <?= isset($errors['date']) && is_array($errors) ? '<p class="form__message">Дата должна быть больше или равна текущей</p>' : '' ?>
     </div>
 
     <div class="form__row">
