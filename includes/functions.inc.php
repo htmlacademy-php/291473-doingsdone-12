@@ -72,7 +72,7 @@ function get_task_time($task)
     $task_time = strtotime($task['deadline']);
     $task_deadline = ($task_time - $current_time) / 3600;
 
-    if ($task_deadline <= 24) {
+    if (isset($task['deadline']) && $task_deadline <= 24) {
         return 'task--important';
     }
 };
@@ -162,12 +162,12 @@ function check_empty_field($required_fields)
  * Проверяет созданную задачу на корректность, сохраняет задачу в базу данных и открывает страницу index.php
  * @param  object $con Ресурс соединения
  * @param  integer $user_id ID авторизованного пользователя, создавшего задачу
- * @return null
+ * @return []
  */
 function check_new_task_validity($con, $user_id)
 {
     if (empty($_POST)) {
-        return null;
+        return [];
     }
 
     $name = $_POST['name'];
@@ -203,7 +203,9 @@ function check_new_task_validity($con, $user_id)
     }
 
     if ($project_id) {
-        $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$project_id'");
+        $safe_project_id = mysqli_real_escape_string($con, $project_id);
+        $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$safe_project_id'");
+
         if (!$selected_project) {
             $errors['project'] = 'Выберите существующий проект';
         }
@@ -221,7 +223,7 @@ function check_new_task_validity($con, $user_id)
 
     header('Location: index.php');
     exit();
-    return null;
+    return [];
 }
 
 /**
@@ -233,7 +235,7 @@ function check_new_task_validity($con, $user_id)
 function check_new_project_validity($con, $user_id)
 {
     if (empty($_POST)) {
-        return null;
+        return [];
     }
 
     $project_name = $_POST['project_name'];
@@ -243,7 +245,9 @@ function check_new_project_validity($con, $user_id)
         $errors = check_field_length(['project_name']);
     }
 
-    $already_created_project = select_query($con, "SELECT * FROM projects WHERE user_id = '$user_id' AND project_name = '$project_name'");
+    $safe_project_name = mysqli_real_escape_string($con, $project_name);
+    $already_created_project = select_query($con, "SELECT * FROM projects WHERE user_id = '$user_id' AND project_name = '$safe_project_name'");
+
     if ($already_created_project) {
         $errors['project_name'] = 'Такой проект уже есть в системе';
     }
@@ -259,7 +263,7 @@ function check_new_project_validity($con, $user_id)
 
     header('Location: index.php');
     exit();
-    return null;
+    return [];
 }
 
 /**
@@ -271,7 +275,7 @@ function check_new_project_validity($con, $user_id)
 function check_registration_validity($con)
 {
     if (empty($_POST)) {
-        return null;
+        return [];
     }
 
     $email = $_POST['email'];
@@ -292,7 +296,9 @@ function check_registration_validity($con)
             $errors['email'] = 'Неверный формат.';
         }
 
-        $already_saved_email = select_query($con, "SELECT email FROM users WHERE email = '$email'");
+        $safe_email = mysqli_real_escape_string($con, $email);
+        $already_saved_email = select_query($con, "SELECT email FROM users WHERE email = '$safe_email'");
+
         if (isset($already_saved_email[0]['email'])) {
             $errors['email'] = 'Уже есть в системе.';
         }
@@ -309,7 +315,7 @@ function check_registration_validity($con)
     mysqli_stmt_execute($stmt);
     header('Location: index.php');
     exit();
-    return null;
+    return [];
 }
 
 /**
@@ -322,7 +328,7 @@ function authenticate($con)
 {
     session_start();
     if (empty($_POST) && empty($_SESSION['user'])) {
-        return null;
+        return [];
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -335,8 +341,11 @@ function authenticate($con)
         }
 
         if (empty($errors)) {
-            $email = mysqli_real_escape_string($con, $_POST['email']);
-            $user_query = select_query($con, "SELECT * FROM users WHERE email = '$email'", 'assoc');
+            $email = $_POST['email'];
+
+            $safe_email = mysqli_real_escape_string($con, $email);
+            $user_query = select_query($con, "SELECT * FROM users WHERE email = '$safe_email'", 'assoc');
+
             $user = $user_query ? $user_query : null;
 
             if (isset($user)) {
@@ -375,15 +384,20 @@ function get_task_status($con, $user_id)
     $task_status = filter_input(INPUT_GET, 'check', FILTER_VALIDATE_INT);
     $task_id = filter_input(INPUT_GET, 'task_id', FILTER_VALIDATE_INT);
 
-    if ($task_status === 1) {
-        mysqli_query($con, "UPDATE tasks SET status = 1 WHERE id = '$task_id' AND user_id = '$user_id'");
-    }
-
-    if ($task_status === 0) {
-        mysqli_query($con, "UPDATE tasks SET status = 0 WHERE id = '$task_id' AND user_id = '$user_id'");
-    }
+    $safe_task_id = mysqli_real_escape_string($con, $task_id);
+    $safe_user_id = mysqli_real_escape_string($con, $user_id);
+    $checked_task = select_query($con, "SELECT * FROM tasks WHERE id = '$safe_task_id' AND user_id = '$safe_user_id'", 'assoc');
 
     if (isset($task_status)) {
+        if (intval($checked_task['status']) === 0) {
+            $status = mysqli_real_escape_string($con, 1);
+        } else {
+            $status = mysqli_real_escape_string($con, 0);
+        }
+
+        mysqli_query($con, "UPDATE tasks SET status = '$status' WHERE id = '$task_id' AND user_id = '$user_id'");
+
+
         header("Location: /index.php");
         exit();
     }
@@ -427,7 +441,7 @@ function get_task_date($date, $tasks)
         foreach ($tasks as $task) {
             $task_date = $task['deadline'];
 
-            if ($task_date < $today) {
+            if (isset($task_date) && $task_date < $today) {
                 $filtered_tasks[] = $task;
             }
         }
