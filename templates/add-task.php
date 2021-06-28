@@ -37,7 +37,7 @@ $file = $_FILE['file'] ?? '';
 
       <select class="form__input form__input--select <?= isset($errors['project']) ? 'form__input--error' : '' ?>" name="project" id="project">
         <?php foreach ($projects as $project) : ?>
-          <option value="<?= $project['id'] ?>"><?= $project['project_name'] ?></option>
+          <option value="<?= $project['id'] ?>"><?= htmlspecialchars($project['project_name']) ?></option>
         <?php endforeach; ?>
       </select>
       <?= isset($errors['project']) && is_array($errors) ? '<p class="form__message">' . $errors['project'] . '</p>' : '' ?>
