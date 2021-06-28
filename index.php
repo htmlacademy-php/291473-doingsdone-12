@@ -24,12 +24,12 @@ if (isset($_SESSION['user'])) {
     }
 
     $date = filter_input(INPUT_GET, 'date', FILTER_DEFAULT);
-    $tasks = get_task_date($date, $tasks);
 
     $project_id = filter_input(INPUT_GET, 'project-id', FILTER_VALIDATE_INT);
     $projects = select_query($con, "SELECT p.* FROM projects p INNER JOIN users u ON u.id = p.user_id WHERE u.id = '$safe_user_id' ORDER BY p.id DESC");
-    $project_tasks = get_project_tasks($project_id, $tasks);
 
+    $project_tasks = get_task_date($date, get_project_tasks($project_id, $tasks));
+    
     $page_content = include_template('main.php', [
         'projects' => $projects,
         'tasks' => $tasks,
