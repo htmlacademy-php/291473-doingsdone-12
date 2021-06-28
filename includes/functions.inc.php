@@ -114,6 +114,15 @@ function check_field_length($required_fields)
     return $errors;
 }
 
+function check_project($project_id, $user_id, $con) {
+    $safe_project_id = mysqli_real_escape_string($con, $project_id);
+    $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$safe_project_id' AND user_id = '$user_id'");
+    
+    if (!$selected_project) {
+        open_404_page();
+    }
+}
+
 /**
  * Из общего массива задач получает массив задач по id конкретного проекта
  * Если id проекта отсутствует в базе данных, открывает 404 страницу
@@ -121,9 +130,11 @@ function check_field_length($required_fields)
  * @param  array $tasks Общий список задач для всех проектов, авторизованного пользователя
  * @return array
  */
-function get_project_tasks($project_id, $tasks)
+function get_project_tasks($project_id, $tasks, $user_id, $con)
 {
     if ($project_id) {
+        check_project($project_id, $user_id, $con);
+
         $project_tasks = [];
         foreach ($tasks as $task) {
             if (intval($task['project_id']) === $project_id) {
@@ -131,7 +142,7 @@ function get_project_tasks($project_id, $tasks)
             }
         }
         if (empty($project_tasks)) {
-            open_404_page();
+            return;
         }
     } else {
         $project_tasks = $tasks;
