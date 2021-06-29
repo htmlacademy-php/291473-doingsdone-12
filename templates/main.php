@@ -26,7 +26,7 @@
 
     <div class="tasks-controls">
         <nav class="tasks-switch">
-            <a href="<?= isset($project_id) ? '/?project-id=' . $project_id . '&date=all' : '?date=all' ?> " class="tasks-switch__item <?= $date === 'all' || !$date ? 'tasks-switch__item--active' : '' ?>">Все задачи</a>
+            <a href="<?= isset($project_id) ? '/?project-id=' . $project_id . '&date=all' : '?date=all' ?><?= $show_complete_tasks === 1 ? '&show_completed=1' : '' ?>" class="tasks-switch__item <?= $date === 'all' || !$date ? 'tasks-switch__item--active' : '' ?>">Все задачи</a>
             <a href="<?= isset($project_id) ? '/?project-id=' . $project_id . '&date=today' : '?date=today' ?><?= $show_complete_tasks === 1 ? '&show_completed=1' : '' ?>" class="tasks-switch__item <?= $date === 'today' ? 'tasks-switch__item--active' : '' ?>">Повестка дня</a>
             <a href="<?= isset($project_id) ? '/?project-id=' . $project_id . '&date=tomorrow' : '?date=tomorrow' ?><?= $show_complete_tasks === 1 ? '&show_completed=1' : '' ?>" class="tasks-switch__item <?= $date === 'tomorrow' ? 'tasks-switch__item--active' : '' ?>">Завтра</a>
             <a href="<?= isset($project_id) ? '/?project-id=' . $project_id . '&date=overdue' : '?date=overdue' ?><?= $show_complete_tasks === 1 ? '&show_completed=1' : '' ?>" class="tasks-switch__item <?= $date === 'overdue' ? 'tasks-switch__item--active' : '' ?>">Просроченные</a>
