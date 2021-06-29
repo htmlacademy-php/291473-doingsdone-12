@@ -114,13 +114,19 @@ function check_field_length($required_fields)
     return $errors;
 }
 
+/**
+ * Проверяет закреплен ли проект за пользователем
+ * Если id проекта отсутствует в базе данных, открывает 404 страницу
+ * @param  integer $project_id ID проекта, для которого следует получить список задач
+ * @param  integer $user_id ID авторизованного пользователя
+ * @param  object $con Ресурс соединения
+ * @return null
+ */
 function check_project($project_id, $user_id, $con) {
     $safe_project_id = mysqli_real_escape_string($con, $project_id);
     $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$safe_project_id' AND user_id = '$user_id'");
     
-    if (!$selected_project) {
-        open_404_page();
-    }
+    return $selected_project;
 }
 
 /**
@@ -128,12 +134,16 @@ function check_project($project_id, $user_id, $con) {
  * Если id проекта отсутствует в базе данных, открывает 404 страницу
  * @param  integer $project_id ID проекта, для которого следует получить список задач
  * @param  array $tasks Общий список задач для всех проектов, авторизованного пользователя
+ * @param  integer $user_id ID авторизованного пользователя
+ * @param  object $con Ресурс соединения
  * @return array
  */
 function get_project_tasks($project_id, $tasks, $user_id, $con)
 {
     if ($project_id) {
-        check_project($project_id, $user_id, $con);
+        if (!check_project($project_id, $user_id, $con)) {
+            open_404_page();
+        }
 
         $project_tasks = [];
         foreach ($tasks as $task) {
@@ -142,7 +152,7 @@ function get_project_tasks($project_id, $tasks, $user_id, $con)
             }
         }
         if (empty($project_tasks)) {
-            return;
+            return [];
         }
     } else {
         $project_tasks = $tasks;
@@ -213,13 +223,8 @@ function check_new_task_validity($con, $user_id)
         $date = null;
     }
 
-    if ($project_id) {
-        $safe_project_id = mysqli_real_escape_string($con, $project_id);
-        $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$safe_project_id'");
-
-        if (!$selected_project) {
-            $errors['project'] = 'Выберите существующий проект';
-        }
+    if ($project_id && !check_project($project_id, $user_id, $con)) {
+        $errors['project'] = 'Выберите существующий проект';
     }
 
     if ($errors) {
