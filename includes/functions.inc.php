@@ -139,10 +139,8 @@ function check_project($project_id, $user_id, $con)
  * @param  object $con Ресурс соединения
  * @return array
  */
-function get_project_tasks($project_id, $tasks, $user_id, $con)
+function get_project_tasks($project_id, $tasks, $user_id, $show_complete_tasks, $con)
 {
-    $show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_VALIDATE_INT);
-
     if ($project_id) {
         if (!check_project($project_id, $user_id, $con)) {
             open_404_page();
