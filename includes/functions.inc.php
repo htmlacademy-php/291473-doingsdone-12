@@ -138,7 +138,7 @@ function check_project($project_id, $user_id, $con) {
  * @param  object $con Ресурс соединения
  * @return array
  */
-function get_project_tasks($project_id, $tasks, $user_id, $con)
+function get_project_tasks($project_id, $tasks, $user_id, $show_complete_tasks, $con)
 {
     if ($project_id) {
         if (!check_project($project_id, $user_id, $con)) {
@@ -147,7 +147,9 @@ function get_project_tasks($project_id, $tasks, $user_id, $con)
 
         $project_tasks = [];
         foreach ($tasks as $task) {
-            if (intval($task['project_id']) === $project_id) {
+            if (intval($task['project_id']) === $project_id && intval($task['status']) === 0 && !$show_complete_tasks) {
+                $project_tasks[] = $task;
+            } else if (intval($task['project_id']) === $project_id && intval($task['status']) === 1 && $show_complete_tasks) {
                 $project_tasks[] = $task;
             }
         }
