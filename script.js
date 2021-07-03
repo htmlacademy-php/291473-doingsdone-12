@@ -22,9 +22,16 @@ if ($taskCheckboxes.length) {
       var el = event.target;
 
       var is_checked = +el.checked;
-      var task_id = el.getAttribute('value');
+      var task_and_project_ids = el.getAttribute('value');
+      var task_id = task_and_project_ids.slice(0, 1);
 
-      var url = '/index.php?task_id=' + task_id + '&check=' + is_checked;
+      if (task_and_project_ids.length === 2) {
+        var project_id = task_and_project_ids.slice(-1);
+        var url = '/index.php?project-id=' + project_id + '&task_id=' + task_id + '&check=' + is_checked;
+      } else {
+        var url = '/index.php?task_id=' + task_id + '&check=' + is_checked;
+      }
+      
       window.location = url;
     }
   });
