@@ -7,14 +7,14 @@ $project_name = $_POST['project_name'] ?? '';
 
   <nav class="main-navigation">
     <ul class="main-navigation__list">
-    <?php if (is_array($projects)) : ?>
-      <?php foreach ($projects as $project) : ?>
-        <li class="main-navigation__list-item">
-          <a class="main-navigation__list-item-link" href="?project-id=<?= $project['id'] ?>"><?= htmlspecialchars($project['project_name']) ?></a>
-          <span class="main-navigation__list-item-count"><?= get_tasks_count($tasks, $project['project_name']) ?></span>
-        </li>
-      <?php endforeach; ?>
-    <?php endif; ?>
+      <?php if (is_array($projects)) : ?>
+        <?php foreach ($projects as $project) : ?>
+          <li class="main-navigation__list-item">
+            <a class="main-navigation__list-item-link" href="?project-id=<?= $project['id'] ?>"><?= htmlspecialchars($project['project_name']) ?></a>
+            <span class="main-navigation__list-item-count"><?= get_tasks_count($tasks, $project['project_name']) ?></span>
+          </li>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </ul>
   </nav>
 

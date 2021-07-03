@@ -51,7 +51,7 @@
                 <tr class="tasks__item task <?= $task['status'] ? 'task--completed' : '' ?> <?= htmlspecialchars(get_task_time($task)) ?>">
                     <td class="task__select">
                         <label class="checkbox task__checkbox">
-                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?= $task['id'], isset($project_id) ? $project_id : ''?>" <?= $task['status'] === 1 ? 'checked' : '' ?>>
+                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?= $task['id'], isset($project_id) ? $project_id : '' ?>" <?= $task['status'] === 1 ? 'checked' : '' ?>>
                             <span class="checkbox__text"><?= htmlspecialchars($task['task_name']) ?></span>
                         </label>
                     </td>

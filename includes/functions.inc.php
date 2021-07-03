@@ -122,10 +122,11 @@ function check_field_length($required_fields)
  * @param  object $con Ресурс соединения
  * @return null
  */
-function check_project($project_id, $user_id, $con) {
+function check_project($project_id, $user_id, $con)
+{
     $safe_project_id = mysqli_real_escape_string($con, $project_id);
     $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$safe_project_id' AND user_id = '$user_id'");
-    
+
     return $selected_project;
 }
 
@@ -138,8 +139,10 @@ function check_project($project_id, $user_id, $con) {
  * @param  object $con Ресурс соединения
  * @return array
  */
-function get_project_tasks($project_id, $tasks, $user_id, $show_complete_tasks, $con)
+function get_project_tasks($project_id, $tasks, $user_id, $con)
 {
+    $show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_VALIDATE_INT);
+
     if ($project_id) {
         if (!check_project($project_id, $user_id, $con)) {
             open_404_page();
