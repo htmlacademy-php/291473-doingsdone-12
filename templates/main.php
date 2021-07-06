@@ -19,7 +19,7 @@
     <h2 class="content__main-heading">Список задач</h2>
 
     <form class="search-form" action="index.php" method="get" autocomplete="off">
-        <input class="search-form__input" type="text" name="search" value="<?= $search ?>" placeholder="Поиск по задачам">
+        <input class="search-form__input" type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Поиск по задачам">
 
         <input class="search-form__submit" type="submit" name="" value="Искать">
     </form>
@@ -51,7 +51,7 @@
                 <tr class="tasks__item task <?= $task['status'] ? 'task--completed' : '' ?> <?= htmlspecialchars(get_task_time($task)) ?>">
                     <td class="task__select">
                         <label class="checkbox task__checkbox">
-                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?= $task['id'], isset($project_id) ? $project_id : '' ?>" <?= $task['status'] === 1 ? 'checked' : '' ?>>
+                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?= htmlspecialchars($task['id']), isset($project_id) ? htmlspecialchars($project_id) : '' ?>" <?= $task['status'] === 1 ? 'checked' : '' ?>>
                             <span class="checkbox__text"><?= htmlspecialchars($task['task_name']) ?></span>
                         </label>
                     </td>

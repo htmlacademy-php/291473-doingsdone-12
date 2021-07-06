@@ -12,7 +12,7 @@ $file = $_FILE['file'] ?? '';
       <?php foreach ($projects as $project) : ?>
         <li class="main-navigation__list-item">
           <a class="main-navigation__list-item-link" href="?project-id=<?= $project['id'] ?>"><?= htmlspecialchars($project['project_name']) ?></a>
-          <span class="main-navigation__list-item-count"><?= htmlspecialchars(get_tasks_count($tasks, $project['project_name'])) ?></span>
+          <span class="main-navigation__list-item-count"><?= get_tasks_count($tasks, htmlspecialchars($project['project_name'])) ?></span>
         </li>
       <?php endforeach; ?>
     </ul>
@@ -28,7 +28,7 @@ $file = $_FILE['file'] ?? '';
     <div class="form__row">
       <label class="form__label" for="name">Название <sup>*</sup></label>
 
-      <input class="form__input <?= isset($errors['name']) && is_array($errors) ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= $name ?>" placeholder="Введите название">
+      <input class="form__input <?= isset($errors['name']) && is_array($errors) ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= htmlspecialchars($name) ?>" placeholder="Введите название">
       <?= isset($errors['name']) && is_array($errors) ? '<p class="form__message">' . $errors['name'] . '</p>' : '' ?>
     </div>
 
@@ -37,7 +37,7 @@ $file = $_FILE['file'] ?? '';
 
       <select class="form__input form__input--select <?= isset($errors['project']) ? 'form__input--error' : '' ?>" name="project" id="project">
         <?php foreach ($projects as $project) : ?>
-          <option value="<?= $project['id'] ?>"><?= htmlspecialchars($project['project_name']) ?></option>
+          <option value="<?= htmlspecialchars($project['id']) ?>"><?= htmlspecialchars($project['project_name']) ?></option>
         <?php endforeach; ?>
       </select>
       <?= isset($errors['project']) && is_array($errors) ? '<p class="form__message">' . $errors['project'] . '</p>' : '' ?>
@@ -46,7 +46,7 @@ $file = $_FILE['file'] ?? '';
     <div class="form__row">
       <label class="form__label" for="date">Дата выполнения</label>
 
-      <input class="form__input form__input--date <?= isset($errors['date']) && is_array($errors) ? 'form__input--error' : '' ?>" type="text" name="date" id="date" value="<?= $date ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
+      <input class="form__input form__input--date <?= isset($errors['date']) && is_array($errors) ? 'form__input--error' : '' ?>" type="text" name="date" id="date" value="<?= htmlspecialchars($date) ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
       <?= isset($errors['date']) && is_array($errors) ? '<p class="form__message">Дата должна быть больше или равна текущей</p>' : '' ?>
     </div>
 
@@ -54,7 +54,7 @@ $file = $_FILE['file'] ?? '';
       <label class="form__label" for="file">Файл</label>
 
       <div class="form__input-file">
-        <input class="visually-hidden" type="file" name="file" id="file" value="<?= $file ?>">
+        <input class="visually-hidden" type="file" name="file" id="file" value="<?= htmlspecialchars($file) ?>">
 
         <label class="button button--transparent" for="file">
           <span>Выберите файл</span>
