@@ -402,7 +402,6 @@ function get_task_status($con, $user_id)
 {
     $task_status = filter_input(INPUT_GET, 'check', FILTER_VALIDATE_INT);
     $task_id = filter_input(INPUT_GET, 'task_id', FILTER_VALIDATE_INT);
-    $project_id = filter_input(INPUT_GET, 'project-id', FILTER_VALIDATE_INT);
 
     $safe_task_id = mysqli_real_escape_string($con, $task_id);
     $safe_user_id = mysqli_real_escape_string($con, $user_id);
@@ -417,11 +416,7 @@ function get_task_status($con, $user_id)
 
         mysqli_query($con, "UPDATE tasks SET status = '$status' WHERE id = '$task_id' AND user_id = '$user_id'");
 
-        if (isset($project_id)) {
-            header("Location: /index.php?project-id=$project_id");
-        } else {
-            header("Location: /index.php");
-        }
+        header("Location: /index.php");
         exit();
     }
 }
