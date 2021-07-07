@@ -402,6 +402,8 @@ function get_task_status($con, $user_id)
 {
     $task_status = filter_input(INPUT_GET, 'check', FILTER_VALIDATE_INT);
     $task_id = filter_input(INPUT_GET, 'task_id', FILTER_VALIDATE_INT);
+    $project_id = filter_input(INPUT_GET, 'project-id', FILTER_VALIDATE_INT);
+    $show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_VALIDATE_INT) ?? 0;
 
     $safe_task_id = mysqli_real_escape_string($con, $task_id);
     $safe_user_id = mysqli_real_escape_string($con, $user_id);
@@ -416,7 +418,13 @@ function get_task_status($con, $user_id)
 
         mysqli_query($con, "UPDATE tasks SET status = '$status' WHERE id = '$task_id' AND user_id = '$user_id'");
 
-        header("Location: /index.php");
+        if ($project_id) {
+            header("Location: /index.php?project-id=$project_id&show_completed=$show_complete_tasks");
+        } else if ($show_complete_tasks) {
+            header("Location: /index.php?show_completed=$show_complete_tasks");
+        } else {
+            header("Location: /index.php");
+        }
         exit();
     }
 }
