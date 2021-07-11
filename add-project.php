@@ -11,7 +11,6 @@ if (isset($_SESSION['user'])) {
     $project_id = filter_input(INPUT_GET, 'project-id', FILTER_VALIDATE_INT);
     $projects = select_query($con, "SELECT p.* FROM projects p INNER JOIN users u ON u.id = p.user_id WHERE u.id = '$safe_user_id' ORDER BY p.id DESC");
     $tasks = select_query($con, "SELECT t.*, p.* FROM tasks t INNER JOIN users u ON u.id = t.user_id INNER JOIN projects p ON p.id = t.project_id WHERE u.id = '$safe_user_id' ORDER BY t.id DESC");
-    $project_tasks = get_project_tasks($project_id, $tasks);
 
     $errors = check_new_project_validity($con, $user_id);
 

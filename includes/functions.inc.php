@@ -115,23 +115,47 @@ function check_field_length($required_fields)
 }
 
 /**
+ * Проверяет закреплен ли проект за пользователем
+ * Если id проекта отсутствует в базе данных, открывает 404 страницу
+ * @param  integer $project_id ID проекта, для которого следует получить список задач
+ * @param  integer $user_id ID авторизованного пользователя
+ * @param  object $con Ресурс соединения
+ * @return null
+ */
+function check_project($project_id, $user_id, $con)
+{
+    $safe_project_id = mysqli_real_escape_string($con, $project_id);
+    $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$safe_project_id' AND user_id = '$user_id'");
+
+    return $selected_project;
+}
+
+/**
  * Из общего массива задач получает массив задач по id конкретного проекта
  * Если id проекта отсутствует в базе данных, открывает 404 страницу
  * @param  integer $project_id ID проекта, для которого следует получить список задач
  * @param  array $tasks Общий список задач для всех проектов, авторизованного пользователя
+ * @param  integer $user_id ID авторизованного пользователя
+ * @param  object $con Ресурс соединения
  * @return array
  */
-function get_project_tasks($project_id, $tasks)
+function get_project_tasks($project_id, $tasks, $user_id, $show_complete_tasks, $con)
 {
     if ($project_id) {
+        if (!check_project($project_id, $user_id, $con)) {
+            open_404_page();
+        }
+
         $project_tasks = [];
         foreach ($tasks as $task) {
-            if (intval($task['project_id']) === $project_id) {
+            if (intval($task['project_id']) === $project_id && intval($task['status']) === 0 && !$show_complete_tasks) {
+                $project_tasks[] = $task;
+            } else if (intval($task['project_id']) === $project_id && intval($task['status']) === 1 && $show_complete_tasks) {
                 $project_tasks[] = $task;
             }
         }
         if (empty($project_tasks)) {
-            open_404_page();
+            return [];
         }
     } else {
         $project_tasks = $tasks;
@@ -202,13 +226,8 @@ function check_new_task_validity($con, $user_id)
         $date = null;
     }
 
-    if ($project_id) {
-        $safe_project_id = mysqli_real_escape_string($con, $project_id);
-        $selected_project = select_query($con, "SELECT * FROM projects WHERE id = '$safe_project_id'");
-
-        if (!$selected_project) {
-            $errors['project'] = 'Выберите существующий проект';
-        }
+    if ($project_id && !check_project($project_id, $user_id, $con)) {
+        $errors['project'] = 'Выберите существующий проект';
     }
 
     if ($errors) {
@@ -383,6 +402,8 @@ function get_task_status($con, $user_id)
 {
     $task_status = filter_input(INPUT_GET, 'check', FILTER_VALIDATE_INT);
     $task_id = filter_input(INPUT_GET, 'task_id', FILTER_VALIDATE_INT);
+    $project_id = filter_input(INPUT_GET, 'project-id', FILTER_VALIDATE_INT);
+    $show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_VALIDATE_INT) ?? 0;
 
     $safe_task_id = mysqli_real_escape_string($con, $task_id);
     $safe_user_id = mysqli_real_escape_string($con, $user_id);
@@ -397,8 +418,13 @@ function get_task_status($con, $user_id)
 
         mysqli_query($con, "UPDATE tasks SET status = '$status' WHERE id = '$task_id' AND user_id = '$user_id'");
 
-
-        header("Location: /index.php");
+        if ($project_id) {
+            header("Location: /index.php?project-id=$project_id&show_completed=$show_complete_tasks");
+        } else if ($show_complete_tasks) {
+            header("Location: /index.php?show_completed=$show_complete_tasks");
+        } else {
+            header("Location: /index.php");
+        }
         exit();
     }
 }

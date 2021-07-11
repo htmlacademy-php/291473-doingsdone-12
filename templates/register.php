@@ -17,21 +17,21 @@ $name = $_POST['name'] ?? '';
     <div class="form__row">
       <label class="form__label" for="email">E-mail <sup>*</sup></label>
 
-      <input class="form__input <?= isset($errors['email']) && is_array($errors) ? 'form__input--error' : '' ?>" type="text" name="email" id="email" value="<?= $email ?>" placeholder="Введите e-mail">
+      <input class="form__input <?= isset($errors['email']) && is_array($errors) ? 'form__input--error' : '' ?>" type="text" name="email" id="email" value="<?= htmlspecialchars($email) ?>" placeholder="Введите e-mail">
       <?= isset($errors['email']) && is_array($errors) ? '<p class="form__message">' . $errors['email'] . '</p>' : '' ?>
     </div>
 
     <div class="form__row">
       <label class="form__label" for="password">Пароль <sup>*</sup></label>
 
-      <input class="form__input <?= isset($errors['password']) && is_array($errors) ? 'form__input--error' : '' ?>" type="password" name="password" id="password" value="<?= $password ?>" placeholder="Введите пароль">
+      <input class="form__input <?= isset($errors['password']) && is_array($errors) ? 'form__input--error' : '' ?>" type="password" name="password" id="password" value="<?= htmlspecialchars($password) ?>" placeholder="Введите пароль">
       <?= isset($errors['password']) && is_array($errors) ? '<p class="form__message">' . $errors['password'] . '</p>' : '' ?>
     </div>
 
     <div class="form__row">
       <label class="form__label" for="name">Имя <sup>*</sup></label>
 
-      <input class="form__input <?= isset($errors['name']) && is_array($errors) ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= $name ?>" placeholder="Введите имя">
+      <input class="form__input <?= isset($errors['name']) && is_array($errors) ? 'form__input--error' : '' ?>" type="text" name="name" id="name" value="<?= htmlspecialchars($name) ?>" placeholder="Введите имя">
       <?= isset($errors['name']) && is_array($errors) ? '<p class="form__message">' . $errors['name'] . '</p>' : '' ?>
     </div>
 
